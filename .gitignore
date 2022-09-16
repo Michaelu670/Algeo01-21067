@@ -1,3 +1,4 @@
-.settings/*
-.classpath
-.project
+# Uncomment saat ingin dikumpulkan
+#.settings/*
+#.classpath
+#.project
