@@ -100,6 +100,19 @@ public class Matriks {
 		return ret;
 	}
 	
+	public Matriks transpose() {
+		/* Mengembalikan matriks transpose */
+		/* I.S. matriks terdefinisi */
+		/* F.S. elemen mat[i][j]= mat[j][i] */
+		Matriks tr = new Matriks(rowCnt, colCnt);
+		for (int i = 0; i < rowCnt; i++){
+			for (int j = 0; j < colCnt; j++) {
+				tr.mat[i][j] = mat[j][i];
+			}
+		}
+		return tr;
+	}
+	
 	
 	/* OBE */
 	public void tukarBaris(int baris1, int baris2) {
@@ -145,12 +158,113 @@ public class Matriks {
 		 */
 	}
 	
-	public void inverse() {
+	public Matriks inverseMethod() {
+		/* Penyelesaian SPL menggunakan metode invers */
+		/* Ax = B, x = A^(-1)B */
 		
+		Matriks A = new Matriks(rowCnt, colCnt-1); // matriks A
+		Matriks x = new Matriks(rowCnt, 1); // matriks x
+		Matriks B = new Matriks(rowCnt, 1); // matriks B
+		
+		for (int i = 0; i < rowCnt; i++) {
+				B.mat[i][0] = mat[i][colCnt-1];
+		}
+		
+		
+		for (int i = 0; i< rowCnt; i++) {
+			for (int j = 0; j<colCnt-1; j++) {
+				A.mat[i][j] = mat[i][j];
+			}
+		}
+		
+		
+		if (rowCnt == colCnt-1) {	// matriks persegi
+			x =  A.inverse().mul(B);	// needs fixed
+			return x;
+		}
+		return x;
 	}
 	
-	public void determinant() {
+	public float determinant() {
+		/* Mencari hasil determinan sebuah matriks */
+		/* Prekondisi: matriks terdefinisi berukuran nxn */
+		float ans = 0;
+		Matriks temp = new Matriks(rowCnt-1, colCnt-1);
+		int sign, i, j,k;
+		sign = 1;
 		
+		if (rowCnt == 1) {
+			ans = (float) getMat(0, 0);
+		} else {
+			for(i=0; i<rowCnt; i++) {
+				for(j=1; j<rowCnt; j++) {
+					for (k=0; k< rowCnt; k++) {
+						if (k<i) {
+							temp.mat[j-1][k] = getMat(j,k);
+						} else if (k>i) {
+							temp.mat[j-1][k-1] = getMat(j, k);
+						}
+					}
+				}
+				ans += sign*getMat(0, i)* temp.determinant();
+				sign = -sign;
+			}
+		}
+		return ans;
+	}
+	
+	public float cofactorElmt(int p, int q) {
+		/* Menghitung cofactor tiap elemen pada matriks */
+		/* Prekondisi: matriks berukuran nxn */
+	
+		Matriks temp = new Matriks(getRow()-1, getCol()-1);
+		
+		int row = 0;
+		int col = 0;
+		for (int i = 0; i< getRow()-1; i++) {
+			if (i == p) {
+				row++;
+			}
+			col = 0;
+			for (int j = 0; j< getCol()-1; j++ ) {
+				if (j == q) {
+					col++;
+				}
+				temp.mat[i][j] = mat[row][col]; 
+				col++;
+			}
+			row ++;
+		}	
+		return temp.determinant();
+	}
+	
+	public Matriks cofactorMtx() {
+		/* Mengembalikan cofactor matriks */
+		/* Prekondisi: matriks terdefinisi berukuran nxn */
+		Matriks cf = new Matriks(rowCnt, colCnt);
+		for (int i = 0; i<rowCnt; i++) {
+			for(int j = 0; j<colCnt; j++) {
+				cf.mat[i][j]= Math.pow((-1), j+i)*cofactorElmt(i, j);
+			}
+		}
+		return cf;
+	}
+	
+	public Matriks adjoin() {
+		Matriks adj = new Matriks(rowCnt, colCnt);
+		adj = cofactorMtx().transpose();
+		return adj;
+	}
+	
+	public Matriks inverse() {
+		Matriks inv = new Matriks(rowCnt, colCnt);
+		if (determinant() == 0) {
+			System.out.println("determinan = 0, tidak ada inverse");
+			inv = null;
+		} else {
+			inv = adjoin().mul(1/(determinant()));
+		}
+		return inv;
 	}
 	
 	public void augment() {
