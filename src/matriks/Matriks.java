@@ -242,20 +242,48 @@ public class Matriks {
 		for (int i = 0; i < rowCnt; i++) {
 				B.mat[i][0] = mat[i][colCnt-1];
 		}
-		
-		
 		for (int i = 0; i< rowCnt; i++) {
 			for (int j = 0; j<colCnt-1; j++) {
 				A.mat[i][j] = mat[i][j];
 			}
 		}
-		
-		
 		if (rowCnt == colCnt-1) {	// matriks persegi
-			x =  A.inverse().mul(B);	// needs fixed
+			x =  A.inverse().mul(B);	
 			return x;
 		}
 		return x;
+	}
+	
+	public Matriks cramer() {
+		Matriks result = new Matriks(rowCnt, 1);
+		if (determinant() != 0) {
+			Matriks temp1 = new Matriks(rowCnt, 1);
+			Matriks temp2 = new Matriks(rowCnt, colCnt-1);
+			
+			for (int row1 = 0; row1 < rowCnt; row1++) {
+				temp1.mat[row1][0] = mat[row1][colCnt-1];
+			}
+			
+			for (int i = 0; i < rowCnt; i++) {
+				
+				for (int row2 = 0; row2 < rowCnt; row2++) {  //copying nxn matrix of m
+					for (int col2 = 0; col2 < colCnt-1; col2++) {
+						temp2.mat[row2][col2] = mat[row2][col2];
+					}
+				}
+				
+				Float det = temp2.determinant();
+				
+				for (int j = 0; j < rowCnt; j++) {
+					temp2.mat[j][i] = temp1.mat[j][0];  //substituting LastCol
+				}
+				result.mat[i][0] = (temp2.determinant())/det;
+			}
+		}
+		else {
+			System.out.println("Tidak dapat diselesaikan (determinant = 0)");
+		}
+		return result;
 	}
 	
 	public float determinant() {
