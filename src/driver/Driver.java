@@ -12,7 +12,7 @@ public class Driver {
 		Matriks m = new Matriks();
 		m.read(s);
 		m.print();
-		m.gaussJordanElimination();
+		m.gaussElimintation();
 		m.print();
 	}
 

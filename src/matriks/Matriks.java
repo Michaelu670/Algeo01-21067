@@ -152,18 +152,57 @@ public class Matriks {
 	
 	/* Metode penyelesaian SPL */
 	public void gaussElimintation() {
+		/* I.S. Matriks terdefinisi
+		 * F.S. melakukan eliminasi gauss pada matriks
+		/* Langkah untuk tiap baris i: 
+		 * 1. Tukar baris jika getMat(i, i) == 0
+		 * 2. Bagi satu baris sehingga getMat(i, i) == 1
+		 * 3. Buat seluruh getMat(k, satuUtama) == 0 untuk setiap k > i
+		 */
+		int satuUtamaPos = 0;
+		for(int i = 0; i < getRow(); i++) {
+			if(satuUtamaPos >= getCol()) break;
+			
+			if(getMat(i, satuUtamaPos) == 0) {
+				for(int k = i+1; k < getRow(); k++) {
+					if(getMat(k, satuUtamaPos) != 0) {
+						// swap baris i dan k
+						tukarBaris(i, k);
+						break;
+					}
+				}
+			}
+			// kalau semua nilainya 0, naikkan posisi satu utama & cont
+			if(getMat(i, satuUtamaPos) == 0) {
+				satuUtamaPos++;
+				continue;
+			}
+			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
+			double pembagi = getMat(i, satuUtamaPos);
+			kaliBaris(i, 1.0/pembagi);
+			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
+			for(int k = i+1; k < getRow(); k++) {
+				double pengali = getMat(k, satuUtamaPos);
+				tambahBaris(k, i, -pengali);
+			}
+			
+			satuUtamaPos++;
+		}
 		
 	}
 	
 	public void gaussJordanElimination() {
-		/* Melakukan eliminasi gauss jordan pada matriks */
+		/* I.S. Matriks terdefinisi
+		 * F.S. melakukan eliminasi gauss jordan pada matriks
 		/* Langkah untuk tiap baris i: 
 		 * 1. Tukar baris jika getMat(i, i) == 0
 		 * 2. Bagi satu baris sehingga getMat(i, i) == 1
-		 * 3. Buat seluruh getMat(i, j) == 0 untuk setiap j != i
+		 * 3. Buat seluruh getMat(k, satuUtama) == 0 untuk setiap k != i
 		 */
 		int satuUtamaPos = 0;
 		for(int i = 0; i < getRow(); i++) {
+			if(satuUtamaPos >= getCol()) break;
+			
 			if(getMat(i, satuUtamaPos) == 0) {
 				for(int k = i+1; k < getRow(); k++) {
 					if(getMat(k, satuUtamaPos) != 0) {
