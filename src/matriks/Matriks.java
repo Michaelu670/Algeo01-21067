@@ -108,10 +108,10 @@ public class Matriks {
 		/* Mengembalikan matriks transpose */
 		/* I.S. matriks terdefinisi */
 		/* F.S. elemen mat[i][j]= mat[j][i] */
-		Matriks tr = new Matriks(rowCnt, colCnt);
+		Matriks tr = new Matriks(getCol(), getRow());
 		for (int i = 0; i < rowCnt; i++){
 			for (int j = 0; j < colCnt; j++) {
-				tr.mat[i][j] = mat[j][i];
+				tr.mat[j][i] = mat[i][j];
 			}
 		}
 		return tr;
