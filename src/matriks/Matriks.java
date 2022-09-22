@@ -78,12 +78,12 @@ public class Matriks {
 	public Matriks mul(Matriks m2) {
 		/* Mengembalikan hasil perkalian matriks self dengan matriks m2 */
 		/* Prakondisi : jumlah baris m = jumlah kolom m2 */
-		assert(colCnt == m2.rowCnt);
-		Matriks ret = new Matriks(rowCnt, m2.colCnt);
-		for(int i = 0; i < rowCnt; i++) {
-			for(int j = 0; j < colCnt; j++) {
+		assert(getCol() == m2.getRow());
+		Matriks ret = new Matriks(getRow(), m2.getCol());
+		for(int i = 0; i < ret.getRow(); i++) {
+			for(int j = 0; j < ret.getCol(); j++) {
 				ret.mat[i][j] = 0;
-				for(int k = 0; k < colCnt; k++) {
+				for(int k = 0; k < getRow(); k++) {
 					ret.mat[i][j] += mat[i][k] * m2.mat[k][j];
 				}
 			}
