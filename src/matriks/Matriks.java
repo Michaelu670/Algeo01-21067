@@ -12,6 +12,11 @@ public class Matriks {
 		rowCnt = rowSz;
 		colCnt = colSz;
 	}
+	public Matriks() {
+		mat = new double[1][1];
+		rowCnt = 1;
+		colCnt = 1;
+	}
 	
 	/* ***BACA/TULIS*** */
 	public void print() {
@@ -22,7 +27,7 @@ public class Matriks {
 			System.out.print("[");
 			for(int j = 0; j < getCol(); j++) {
 				if(j > 0) System.out.print(",");
-				System.out.print(getMat(i, j));
+				System.out.printf("%.2f",getMat(i, j));
 			}
 			if(i == getRow() - 1) System.out.print("]");
 			else System.out.println("],");
@@ -30,12 +35,11 @@ public class Matriks {
 		System.out.println("]");
 	}
 	
-	public void read() {
+	public void read(Scanner s) {
 		/* Membaca sebuah matriks dari keyboard
 		 * Dimulai dengan membaca jumlah baris dan jumlah kolom
 		 * TODO : perbaiki metode read sesuai permintaan tugas
 		 */
-		Scanner s = new Scanner(System.in);
 		System.out.print("Jumlah baris: ");
 		rowCnt = s.nextInt();
 		System.out.print("Jumlah kolom: ");
@@ -153,9 +157,39 @@ public class Matriks {
 	
 	public void gaussJordanElimination() {
 		/* Melakukan eliminasi gauss jordan pada matriks */
-		/* Langkah: 
-		 * 1. 
+		/* Langkah untuk tiap baris i: 
+		 * 1. Tukar baris jika getMat(i, i) == 0
+		 * 2. Bagi satu baris sehingga getMat(i, i) == 1
+		 * 3. Buat seluruh getMat(i, j) == 0 untuk setiap j != i
 		 */
+		int satuUtamaPos = 0;
+		for(int i = 0; i < getRow(); i++) {
+			if(getMat(i, satuUtamaPos) == 0) {
+				for(int k = i+1; k < getRow(); k++) {
+					if(getMat(k, satuUtamaPos) != 0) {
+						// swap baris i dan k
+						tukarBaris(i, k);
+						break;
+					}
+				}
+			}
+			// kalau semua nilainya 0, naikkan posisi satu utama & cont
+			if(getMat(i, satuUtamaPos) == 0) {
+				satuUtamaPos++;
+				continue;
+			}
+			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
+			double pembagi = getMat(i, satuUtamaPos);
+			kaliBaris(i, 1.0/pembagi);
+			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
+			for(int k = 0; k < getRow(); k++) {
+				if(i == k) continue;
+				double pengali = getMat(k, satuUtamaPos);
+				tambahBaris(k, i, -pengali);
+			}
+			
+			satuUtamaPos++;
+		}
 	}
 	
 	public Matriks inverseMethod() {
