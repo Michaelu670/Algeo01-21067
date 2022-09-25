@@ -314,6 +314,49 @@ public class Matriks {
 		return ans;
 	}
 	
+	public double determinanReduksiBaris() {
+		Matriks tempMtx = new Matriks(getRow(), getCol());
+		
+		for (int g = 0; g < getRow(); g++) {
+			for (int h = 0; h < getCol(); h++) {
+				tempMtx.setMat(g, h, getMat(g, h));
+			}
+		}
+		
+		double t = 0;
+		for (int i = 0; i < getRow() - 1; i++) {
+			if (getMat(i, 0) == 0) {
+				tempMtx.tukarBaris(i, i + 1);
+				t += 1;
+			}
+		} 
+		int x = 0, y = 0;
+		for (int a = 1; a < getRow() ; a++) {
+			for (int b = 1; b < (getRow() - (a - 1)); b++) {
+				double p = tempMtx.getMat(b + x, y) / tempMtx.getMat(x, y);
+				if (((getMat(b + x, x) >= 0) && (p * getMat(x, x) >= 0)) || ((getMat(b + x, x) <= 0) && (p * getMat(x, x) <= 0))) {
+					for (int c = 0; c < getCol() - (a - 1) ; c++) {
+						tempMtx.setMat(b + x, c + x, ((tempMtx.getMat(b + x, c + x)) - (p * (tempMtx.getMat(x, c + x)))));
+					}
+				}
+				else {	
+					for (int c = 0; c < getCol() - (a - 1) ; c++) {
+						tempMtx.setMat(b + x, c + x, ((tempMtx.getMat(b + x, c)) + (p * (tempMtx.getMat(x, c)))));
+					}
+				}
+					
+				}
+			x += 1;
+			y += 1;
+			}
+		
+		double z = 1;
+		for (int d = 1; d < getRow(); d++) {
+			z *= (tempMtx.getMat(d, d));
+		}
+		return tempMtx.getMat(0, 0) * z * Math.pow((-1), t);		
+}
+	
 	public float cofactorElmt(int p, int q) {
 		/* Menghitung cofactor tiap elemen pada matriks */
 		/* Prekondisi: matriks berukuran nxn */
