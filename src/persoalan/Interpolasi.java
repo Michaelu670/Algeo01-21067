@@ -9,7 +9,7 @@ public class Interpolasi {
 		for (int i = 0; i < mtx.getRow(); i++) {
 			for (int j = 0; j < mtx.getCol(); j++) {
 				if (j == mtx.getCol()-1) {
-					mtx.setMat(i, j, m.getMat(i, j));
+					mtx.setMat(i, j, m.getMat(i, 1));
 				} else {
 					mtx.setMat(i, j, Math.pow(m.getMat(i, 0), j));
 				}
