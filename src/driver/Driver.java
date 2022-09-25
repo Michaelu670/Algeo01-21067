@@ -1,6 +1,7 @@
 package driver;
 
 import java.util.Scanner;
+import persoalan.*;
 
 import matriks.Matriks;
 
@@ -12,8 +13,9 @@ public class Driver {
 		Matriks m = new Matriks();
 		m.read(s);
 		m.print();
-		m = m.inverse();
-		m.print();
+		String r = Regresi.regresiLinierBerganda(m);
+		
+		System.out.println(r);
 	}
 
 }
