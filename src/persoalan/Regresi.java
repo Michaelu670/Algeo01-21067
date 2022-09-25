@@ -30,10 +30,10 @@ public class Regresi {
 				pers += Double.toString(valB.getMat(i, valB.getCol() - 1));
 			}
 			else if (valB.getMat(i, valB.getCol() - 1) >= 0) {
-				pers += " + " + valB.getMat(i, valB.getCol() - 1) + "X";
+				pers += " + " + valB.getMat(i, valB.getCol() - 1) + "X" + "[" + i + "]";
 			}
 			else {
-				pers += " - " + Math.abs(valB.getMat(i, valB.getCol() - 1)) + "X";
+				pers += " - " + Math.abs(valB.getMat(i, valB.getCol() - 1)) + "X" + "[" + i + "]";
 			}
 			
 		}
