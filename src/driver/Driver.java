@@ -13,9 +13,10 @@ public class Driver {
 		Matriks m = new Matriks();
 		m.read(s);
 		m.print();
-		Matriks r = Regresi.regresiLinierBerganda(m);
+		m = m.inverseByAugment();
+		m.print();
 		
-		r.print();
+		Bicubic.bicubicInterpolation("Hello.txt");
 	}
 
 }
