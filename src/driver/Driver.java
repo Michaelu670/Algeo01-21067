@@ -16,7 +16,7 @@ public class Driver {
 		m = m.inverseByAugment();
 		m.print();
 		
-		Bicubic.mult().print();
+		Bicubic.bicubicInterpolation("Hello.txt");
 	}
 
 }
