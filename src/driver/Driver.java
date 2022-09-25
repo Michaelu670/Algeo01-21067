@@ -13,9 +13,9 @@ public class Driver {
 		Matriks m = new Matriks();
 		m.read(s);
 		m.print();
-		Matriks r = Regresi.regresiLinierBerganda(m);
+		String r = Regresi.regresiLinierBerganda(m);
 		
-		r.print();
+		System.out.println(r);
 	}
 
 }
