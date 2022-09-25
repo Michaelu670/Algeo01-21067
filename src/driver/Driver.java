@@ -1,9 +1,9 @@
 package driver;
 
 import java.util.Scanner;
+import persoalan.*;
 
 import matriks.Matriks;
-import persoalan.Bicubic;
 
 public class Driver {
 

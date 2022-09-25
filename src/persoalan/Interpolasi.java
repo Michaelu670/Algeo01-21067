@@ -1,7 +1,5 @@
 package persoalan;
-
 import matriks.Matriks;
-
 public class Interpolasi {
 	
 	public static void interpolasi(double x, Matriks m ) {
