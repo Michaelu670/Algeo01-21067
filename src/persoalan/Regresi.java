@@ -3,10 +3,12 @@ import matriks.Matriks;
 
 public class Regresi {
 
-	public static String regresiLinierBerganda(Matriks m) {
+	public static Matriks regresiLinierBerganda(Matriks m) {
+		//outputnya belum dalam bentuk persamaan
+		
 		Matriks regMtx = new Matriks(m.getRow(), m.getCol());
 		Matriks yMtx = new Matriks(m.getRow(), 1);
-		
+		yMtx.print();
 		for (int g = 0; g < m.getRow(); g++) {
 			for (int h = 0; h < m.getCol() - 1; h++) {
 				if (h == 0) {
@@ -21,9 +23,9 @@ public class Regresi {
 			yMtx.setMat(y, 0, regMtx.getMat(y, regMtx.getCol()));
 		}
 			
-		Matriks valB = regMtx.mul(regMtx.transpose()).inverse().mul(regMtx.transpose()).mul(yMtx);
+		//Matriks valB = regMtx.mul(regMtx.transpose()).inverse().mul(regMtx.transpose()).mul(yMtx);
 		
-		String pers = "f(x) = ";
+		/*String pers = "f(x) = ";
 		for (int i = 0; i < m.getRow(); i++) {
 			if (i == 0) {
 				pers += Double.toString(valB.getMat(i, valB.getCol()));
@@ -35,8 +37,10 @@ public class Regresi {
 				pers += " - " + Math.abs(valB.getMat(i, valB.getCol())) + "X";
 			}
 			
-		}
-		return pers;
+		}*/
+		return yMtx;
+		
+		
 	}
 	
 	

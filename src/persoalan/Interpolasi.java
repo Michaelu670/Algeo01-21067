@@ -1,5 +1,5 @@
 package persoalan;
-
+import matriks.Matriks;
 public class Interpolasi {
   
 	public float interpolasi(double x, Matriks m ) {
