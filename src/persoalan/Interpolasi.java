@@ -33,12 +33,13 @@ public class Interpolasi {
 			}
 			
 			if (i == 0) {
-				System.out.printf(" %c%f", sign, mtx.getMat(i,0), mtx.getRow()-1);
+				System.out.printf(" %c%.4f", sign, mtx.getMat(i,0), mtx.getRow()-1);
 			} else if (i == mtx.getRow()-1){
-				System.out.printf(" %fx^%d", mtx.getMat(i, 0), mtx.getRow()-1);
+				System.out.printf(" %.4fx^%d", mtx.getMat(i, 0), mtx.getRow()-1);
 			}else {
-				System.out.printf(" %c%fx^%d", sign, mtx.getMat(i, 0), mtx.getRow()-1-i);
+				System.out.printf(" %c%.4fx^%d", sign, mtx.getMat(i, 0), mtx.getRow()-1-i);
 			}
 		}
+		System.out.printf("\nf(%.2f)= %.4f", x, ans);
 	}
 }
