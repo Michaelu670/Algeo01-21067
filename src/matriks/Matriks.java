@@ -355,7 +355,7 @@ public class Matriks {
 			z *= (tempMtx.getMat(d, d));
 		}
 		return tempMtx.getMat(0, 0) * z * Math.pow((-1), t);		
-}
+	}
 	
 	public float cofactorElmt(int p, int q) {
 		/* Menghitung cofactor tiap elemen pada matriks */
@@ -409,6 +409,31 @@ public class Matriks {
 			inv = adjoin().mul(1/(determinant()));
 		}
 		return inv;
+	}
+	
+	public Matriks inverseByAugment() {
+		Matriks inv = new Matriks(getRow(), getCol() * 2);
+		for(int i = 0; i < getRow(); i++) {
+			for(int j = 0; j < getCol(); j++) {
+				inv.setMat(i, j, getMat(i, j));
+				if(i == j) {
+					inv.setMat(i, j + getCol(), 1);
+				} else {
+					inv.setMat(i, j + getCol(), 0);
+				}
+				
+			}
+		}
+		
+		inv.gaussJordanElimination();
+		Matriks ret = new Matriks(getRow(), getCol());
+		for(int i = 0; i < getRow(); i++) {
+			for(int j = 0; j < getCol(); j++) {
+				ret.setMat(i, j, inv.getMat(i, j + getCol()));
+			}
+		}
+		
+		return ret;
 	}
 	
 	public void augment() {

@@ -3,6 +3,7 @@ package driver;
 import java.util.Scanner;
 
 import matriks.Matriks;
+import persoalan.Bicubic;
 
 public class Driver {
 
@@ -12,8 +13,10 @@ public class Driver {
 		Matriks m = new Matriks();
 		m.read(s);
 		m.print();
-		m = m.inverse();
+		m = m.inverseByAugment();
 		m.print();
+		
+		Bicubic.mult().print();
 	}
 
 }
