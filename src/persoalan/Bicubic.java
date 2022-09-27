@@ -1,8 +1,14 @@
 package persoalan;
 
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
+import java.io.IOException;
 
 import matriks.Matriks;
 
@@ -87,8 +93,19 @@ public class Bicubic {
 		System.out.println("f(" + tx + " , " + ty + ") = " + ans);
 	}
 	
+	public static double bicubicInterpolation(Matriks f, double tx, double ty, Matriks a) {
+		double ans = 0;
+		a = a.mul(f);
+		for(int i = 0; i <= 3; i++) {
+			for(int j = 0; j <= 3; j++) {
+				ans += a.getMat(i * 4 + j, 0) * Math.pow(tx, i) * Math.pow(ty, j);
+			}
+		}
+		return ans;
+	}
+	
 	/* Matriks inverse(X) sebagai pengali */
-	public static Matriks mult() {
+	public static final Matriks mult() {
 		Matriks ret = new Matriks(16, 16);
 		for(int x = -1; x <= 2; x++) {
 			for(int y = -1; y <= 2; y++) {
@@ -101,5 +118,66 @@ public class Bicubic {
 		}
 		
 		return ret.inverseByAugment();
+	}
+	
+	/* BONUS */
+	public static void zoomImg(String sourceFile, String destFile) {
+		BufferedImage img = null;
+		File f = null;
+		
+		try {
+			f = new File(sourceFile);
+			img = ImageIO.read(f);
+		} catch (IOException e) {
+			System.out.println(e);
+			return;
+		}
+		
+		Matriks a = mult();
+		
+		BufferedImage imgZoom = new BufferedImage(img.getWidth() * 2, img.getHeight() * 2, BufferedImage.TYPE_INT_RGB);
+		imgZoom.createGraphics();
+		for(int i = 0; i < img.getWidth(); i++) {
+			for(int j = 0; j < img.getHeight(); j++) {
+				Matriks mr = new Matriks(16, 1);
+				Matriks mg = new Matriks(16, 1);
+				Matriks mb = new Matriks(16, 1);
+				
+				int idx = 0;
+				for(int ii = i - 1; ii <= i + 2; ii++) {
+					for(int jj = j - 1; jj <= j + 2; jj++) {
+						int idx_i = ii, idx_j = jj;
+						idx_i = Math.max(idx_i, 0);
+						idx_i = Math.min(idx_i, img.getWidth() - 1);
+						idx_j = Math.max(idx_j, 0);
+						idx_j = Math.min(idx_j, img.getHeight() - 1);
+						Color c = new Color( img.getRGB(idx_i, idx_j) );
+						mr.setMat(idx, 0, c.getRed());
+						mg.setMat(idx, 0, c.getGreen());
+						mb.setMat(idx, 0, c.getBlue());
+						idx++;
+					}
+				}
+				for(int ii = 0; ii < 2; ii++) {
+					for(int jj = 0; jj < 2; jj++) {
+						Color c = new Color(
+								Math.max( Math.min( (int)bicubicInterpolation(mr, (double)ii/2.0, (double)jj/2.0, a), 255), 0),
+								Math.max( Math.min( (int)bicubicInterpolation(mg, (double)ii/2.0, (double)jj/2.0, a), 255), 0),
+								Math.max( Math.min( (int)bicubicInterpolation(mb, (double)ii/2.0, (double)jj/2.0, a), 255), 0));
+						imgZoom.setRGB(i*2 + ii, j*2 + jj, c.getRGB());
+					}
+				}
+				
+				
+			}
+		}
+		
+		try {
+			File output_file = new File(destFile);
+			ImageIO.write(imgZoom, "jpg", output_file);
+		}
+		catch(IOException e) {
+			System.out.println(e);
+		}
 	}
 }

@@ -11,12 +11,9 @@ public class Driver {
 		// TODO Auto-generated method stub
 		Scanner s = new Scanner(System.in);
 		Matriks m = new Matriks();
-		m.read(s);
-		m.print();
-		m = m.inverseByAugment();
-		m.print();
 		
 		Bicubic.bicubicInterpolation("Hello.txt");
+		Bicubic.zoomImg("dot.png", "dot2.jpg");
 	}
 
 }
