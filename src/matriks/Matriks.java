@@ -296,28 +296,29 @@ public class Matriks {
 		return result;
 	}
 	
-	public float determinant() {
+	public static double determinant(Matriks m) {
 		/* Mencari hasil determinan sebuah matriks */
 		/* Prekondisi: matriks terdefinisi berukuran nxn */
-		float ans = 0;
-		Matriks temp = new Matriks(rowCnt-1, colCnt-1);
+		double ans = 0;
+		Matriks temp = new Matriks(m.getRow()-1, m.getCol()-1);
 		int sign, i, j,k;
 		sign = 1;
 		
-		if (rowCnt == 1) {
-			ans = (float) getMat(0, 0);
+		if (m.getRow() == 1) {
+			ans = (double) m.getMat(0, 0);
 		} else {
-			for(i=0; i<rowCnt; i++) {
-				for(j=1; j<rowCnt; j++) {
-					for (k=0; k< rowCnt; k++) {
+			for(i=0; i<m.getRow(); i++) {
+				for(j=1; j<m.getRow(); j++) {
+					for (k=0; k< m.getRow(); k++) {
 						if (k<i) {
-							temp.mat[j-1][k] = getMat(j,k);
+							temp.setMat(j-1, k, m.getMat(j, k));
+							
 						} else if (k>i) {
-							temp.mat[j-1][k-1] = getMat(j, k);
+							temp.setMat(j-1, k-1, m.getMat(j, k));
 						}
 					}
 				}
-				ans += sign*getMat(0, i)* temp.determinant();
+				ans += sign*m.getMat(0, i)* determinant(temp);
 				sign = -sign;
 			}
 		}
