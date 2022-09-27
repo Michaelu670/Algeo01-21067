@@ -254,30 +254,40 @@ public class Matriks {
 		return x;
 	}
 	
-	public Matriks cramer() {
-		Matriks result = new Matriks(rowCnt, 1);
-		if (determinant() != 0) {
-			Matriks temp1 = new Matriks(rowCnt, 1);
-			Matriks temp2 = new Matriks(rowCnt, colCnt-1);
+	public static Matriks cramer(Matriks m) {
+		
+		Matriks result = new Matriks(m.getRow(), 1);
+		Matriks temp1 = new Matriks(m.getRow(), 1);
+		Matriks temp2 = new Matriks(m.getRow(), m.getCol()-1);
+		
+		for (int row1 = 0; row1 < m.getRow(); row1++) {
+			temp1.setMat(row1, 0, m.getMat(row1, m.getCol()-1));
+		}
+		
 			
-			for (int row1 = 0; row1 < rowCnt; row1++) {
-				temp1.mat[row1][0] = mat[row1][colCnt-1];
+			for (int row2 = 0; row2 < m.getRow(); row2++) {  //copying nxn matrix of m
+				for (int col2 = 0; col2 < m.getCol()-1; col2++) {
+					temp2.setMat(row2, col2, m.getMat(row2, col2));
+				}
 			}
+		
 			
-			for (int i = 0; i < rowCnt; i++) {
-				
-				for (int row2 = 0; row2 < rowCnt; row2++) {  //copying nxn matrix of m
-					for (int col2 = 0; col2 < colCnt-1; col2++) {
-						temp2.mat[row2][col2] = mat[row2][col2];
+			double det = determinant(temp2);
+			temp2.print();
+			System.out.println(det);
+		if (det != 0) {
+
+			for (int i = 0; i < m.getRow(); i++) {
+				for (int row2 = 0; row2 < m.getRow(); row2++) {  //copying nxn matrix of m
+					for (int col2 = 0; col2 < m.getCol()-1; col2++) {
+						temp2.setMat(row2, col2, m.getMat(row2, col2));
 					}
 				}
-				
-				Float det = temp2.determinant();
-				
-				for (int j = 0; j < rowCnt; j++) {
-					temp2.mat[j][i] = temp1.mat[j][0];  //substituting LastCol
+				for (int j = 0; j < m.getRow(); j++) {
+					temp2.setMat(j, i, temp1.getMat(j, 0));
+					//substituting LastCol
 				}
-				result.mat[i][0] = (temp2.determinant())/det;
+				result.setMat(i, 0, determinant(temp2)/det);
 			}
 		}
 		else {
