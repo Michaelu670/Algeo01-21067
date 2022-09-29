@@ -379,7 +379,7 @@ public class Matriks {
 		return tempMtx.getMat(0, 0) * z * Math.pow((-1), t);		
 	}
 	
-	public float cofactorElmt(int p, int q) {
+	public double cofactorElmt(int p, int q) {
 		/* Menghitung cofactor tiap elemen pada matriks */
 		/* Prekondisi: matriks berukuran nxn */
 	
