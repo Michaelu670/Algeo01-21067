@@ -307,6 +307,40 @@ public class Matriks {
 		}
 	}
 	
+	public Matriks cramerMtx() {
+		/*Penyelesaian SPL menggunakan metode cramer*/
+		/*return dalam bentuk matriks*/
+		Matriks A = new Matriks(getRow(), getCol()-1); 
+		Matriks B = new Matriks(getRow(), 1);
+		Matriks ret = new Matriks (getRow(), 1);
+		int i,j;	
+		if (rowCnt == colCnt-1)  { //ukuran matriks sesuai
+			for (i = 0; i < A.getRow(); i++) {
+				for (j = 0; j < A.getCol(); j++) {
+					A.setMat(i, j, getMat(i, j));
+				}
+			}
+			for (i = 0; i < A.getRow(); i++) {
+				B.setMat(i, 0, getMat(i, getCol()-1));
+			}
+			double det = A.determinant(); 
+			if (det != 0) {
+				for (i = 0; i< A.getRow(); i++) {
+					for (int row2 = 0; row2 < getRow(); row2++) {  //copying nxn matrix 
+						for (int col2 = 0; col2 < getCol()-1; col2++) {
+							A.setMat(row2, col2, getMat(row2, col2));
+						}
+					}
+					for (j = 0; j < getRow(); j++) {
+						A.setMat(j, i, B.getMat(j, 0)); //substituting LastCol
+					}
+					ret.setMat(i, 0, A.determinant()/det);
+				}	
+			}
+		}
+		return ret;
+	}
+	
 	public double determinant() {
 		/* Mencari hasil determinan sebuah matriks */
 		/* Prekondisi: matriks terdefinisi berukuran nxn */
