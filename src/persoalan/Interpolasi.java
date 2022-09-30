@@ -35,9 +35,7 @@ public class Interpolasi {
 				}
 			}
 		}
-		mtx.print();
-		mtx = Matriks.cramer(mtx);
-		mtx.print();
+		mtx = mtx.cramerMtx();
 		
 		for (int i = 0; i< mtx.getRow(); i++) {
 			ans += mtx.getMat(i, 0) * Math.pow(x, i);

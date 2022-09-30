@@ -231,7 +231,7 @@ public class Matriks {
 		}
 	}
 	
-	public Matriks inverseMethod() {
+	public void inverseMethod() {
 		/* Penyelesaian SPL menggunakan metode invers */
 		/* Ax = B, x = A^(-1)B */
 		
@@ -239,86 +239,131 @@ public class Matriks {
 		Matriks x = new Matriks(rowCnt, 1); // matriks x
 		Matriks B = new Matriks(rowCnt, 1); // matriks B
 		
-		for (int i = 0; i < rowCnt; i++) {
+		if ((rowCnt == colCnt-1)) {	//ukuran matriks sesuai
+			for (int i = 0; i < rowCnt; i++) {
 				B.mat[i][0] = mat[i][colCnt-1];
-		}
-		for (int i = 0; i< rowCnt; i++) {
-			for (int j = 0; j<colCnt-1; j++) {
-				A.mat[i][j] = mat[i][j];
 			}
-		}
-		if (rowCnt == colCnt-1) {	// matriks persegi
-			x =  A.inverse().mul(B);	
-			return x;
-		}
-		return x;
-	}
-	
-	public static Matriks cramer(Matriks m) {
-		
-		Matriks result = new Matriks(m.getRow(), 1);
-		Matriks temp1 = new Matriks(m.getRow(), 1);
-		Matriks temp2 = new Matriks(m.getRow(), m.getCol()-1);
-		
-		for (int row1 = 0; row1 < m.getRow(); row1++) {
-			temp1.setMat(row1, 0, m.getMat(row1, m.getCol()-1));
-		}
-		
-			
-			for (int row2 = 0; row2 < m.getRow(); row2++) {  //copying nxn matrix of m
-				for (int col2 = 0; col2 < m.getCol()-1; col2++) {
-					temp2.setMat(row2, col2, m.getMat(row2, col2));
+			for (int i = 0; i< rowCnt; i++) {
+				for (int j = 0; j<colCnt-1; j++) {
+					A.mat[i][j] = mat[i][j];
 				}
 			}
+			if (A.determinant() != 0) {
+				x =  A.inverse().mul(B);	
+				for (int i = 0; i< A.getRow(); i++) {
+					System.out.printf("x%d = %.4f\n", i+1, x.getMat(i, 0));
+				}
+			} else {
+				System.out.println("Solusi tidak dapat ditentukan");
+			}
+		} else {
+			System.out.println("Solusi tidak dapat ditentukan");
+		}
+	}
+	
+	public void cramer() {
+		/*Penyelesaian SPL menggunakan metode cramer*/
 		
-			
-			double det = determinant(temp2);
-			temp2.print();
-			System.out.println(det);
-		if (det != 0) {
+		Matriks A = new Matriks(getRow(), getCol()-1); 
+		Matriks B = new Matriks(getRow(), 1);
+		Matriks ret = new Matriks (getRow(), 1);
+		int i,j;	
+		
+		if (rowCnt == colCnt-1)  { //ukuran matriks sesuai
+			for (i = 0; i < A.getRow(); i++) {
+				for (j = 0; j < A.getCol(); j++) {
+					A.setMat(i, j, getMat(i, j));
+				}
+			}
 
-			for (int i = 0; i < m.getRow(); i++) {
-				for (int row2 = 0; row2 < m.getRow(); row2++) {  //copying nxn matrix of m
-					for (int col2 = 0; col2 < m.getCol()-1; col2++) {
-						temp2.setMat(row2, col2, m.getMat(row2, col2));
-					}
-				}
-				for (int j = 0; j < m.getRow(); j++) {
-					temp2.setMat(j, i, temp1.getMat(j, 0));
-					//substituting LastCol
-				}
-				result.setMat(i, 0, determinant(temp2)/det);
+			for (i = 0; i < A.getRow(); i++) {
+				B.setMat(i, 0, getMat(i, getCol()-1));
 			}
+			
+			double det = A.determinant(); 
+			
+			if (det != 0) {
+				for (i = 0; i< A.getRow(); i++) {
+					for (int row2 = 0; row2 < getRow(); row2++) {  //copying nxn matrix 
+						for (int col2 = 0; col2 < getCol()-1; col2++) {
+							A.setMat(row2, col2, getMat(row2, col2));
+						}
+					}
+					
+					for (j = 0; j < getRow(); j++) {
+						A.setMat(j, i, B.getMat(j, 0)); //substituting LastCol
+					}
+					
+					ret.setMat(i, 0, A.determinant()/det);
+				}
+				for (i = 0; i< A.getRow(); i++) {
+					System.out.printf("x%d = %.4f\n", i+1, ret.getMat(i, 0));
+				}
+			} else {
+				System.out.println("Solusi tidak dapat ditentukan");
+			}
+		} else {
+			System.out.println("Solusi tidak dapat ditentukan");
 		}
-		else {
-			System.out.println("Tidak dapat diselesaikan (determinant = 0)");
-		}
-		return result;
 	}
 	
-	public static double determinant(Matriks m) {
+	public Matriks cramerMtx() {
+		/*Penyelesaian SPL menggunakan metode cramer*/
+		/*return dalam bentuk matriks*/
+		Matriks A = new Matriks(getRow(), getCol()-1); 
+		Matriks B = new Matriks(getRow(), 1);
+		Matriks ret = new Matriks (getRow(), 1);
+		int i,j;	
+		if (rowCnt == colCnt-1)  { //ukuran matriks sesuai
+			for (i = 0; i < A.getRow(); i++) {
+				for (j = 0; j < A.getCol(); j++) {
+					A.setMat(i, j, getMat(i, j));
+				}
+			}
+			for (i = 0; i < A.getRow(); i++) {
+				B.setMat(i, 0, getMat(i, getCol()-1));
+			}
+			double det = A.determinant(); 
+			if (det != 0) {
+				for (i = 0; i< A.getRow(); i++) {
+					for (int row2 = 0; row2 < getRow(); row2++) {  //copying nxn matrix 
+						for (int col2 = 0; col2 < getCol()-1; col2++) {
+							A.setMat(row2, col2, getMat(row2, col2));
+						}
+					}
+					for (j = 0; j < getRow(); j++) {
+						A.setMat(j, i, B.getMat(j, 0)); //substituting LastCol
+					}
+					ret.setMat(i, 0, A.determinant()/det);
+				}	
+			}
+		}
+		return ret;
+	}
+	
+	public double determinant() {
 		/* Mencari hasil determinan sebuah matriks */
 		/* Prekondisi: matriks terdefinisi berukuran nxn */
 		double ans = 0;
-		Matriks temp = new Matriks(m.getRow()-1, m.getCol()-1);
+		Matriks temp = new Matriks(getRow()-1, getCol()-1);
 		int sign, i, j,k;
 		sign = 1;
 		
-		if (m.getRow() == 1) {
-			ans = (double) m.getMat(0, 0);
+		if (getRow() == 1) {
+			ans = (double) getMat(0, 0);
 		} else {
-			for(i=0; i<m.getRow(); i++) {
-				for(j=1; j<m.getRow(); j++) {
-					for (k=0; k< m.getRow(); k++) {
+			for(i=0; i<getRow(); i++) {
+				for(j=1; j<getRow(); j++) {
+					for (k=0; k< getRow(); k++) {
 						if (k<i) {
-							temp.setMat(j-1, k, m.getMat(j, k));
+							temp.setMat(j-1, k, getMat(j, k));
 							
 						} else if (k>i) {
-							temp.setMat(j-1, k-1, m.getMat(j, k));
+							temp.setMat(j-1, k-1,getMat(j, k));
 						}
 					}
 				}
-				ans += sign*m.getMat(0, i)* determinant(temp);
+				ans += sign*getMat(0, i)* temp.determinant();
 				sign = -sign;
 			}
 		}
@@ -368,7 +413,7 @@ public class Matriks {
 		return tempMtx.getMat(0, 0) * z * Math.pow((-1), t);		
 	}
 	
-	public float cofactorElmt(int p, int q) {
+	public double cofactorElmt(int p, int q) {
 		/* Menghitung cofactor tiap elemen pada matriks */
 		/* Prekondisi: matriks berukuran nxn */
 	
@@ -414,7 +459,6 @@ public class Matriks {
 	public Matriks inverse() {
 		Matriks inv = new Matriks(rowCnt, colCnt);
 		if (determinant() == 0) {
-			System.out.println("determinan = 0, tidak ada inverse");
 			inv = null;
 		} else {
 			inv = adjoin().mul(1/(determinant()));
