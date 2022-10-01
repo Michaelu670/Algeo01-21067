@@ -41,7 +41,10 @@ public class Driver {
 					if (opsi == 1) {
 						m.read(s);
 					} else {
-						//m = read from file
+						System.out.println("Masukkan nama file: ");
+						String fileName = s.next();
+						m = Matriks.readFile(fileName);
+						m.print();
 					}
 					
 					Menu.SPL(metode, m);
@@ -66,7 +69,10 @@ public class Driver {
 					if (opsi == 1) {
 						m.read(s);
 					} else {
-						//m = read from file
+						System.out.println("Masukkan nama file: ");
+						String fileName = s.next();
+						m = Matriks.readFile(fileName);
+						m.print();
 					}
 					
 					if (m.getRow() != m.getCol()) {
@@ -125,7 +131,13 @@ public class Driver {
 				if (opsi == 1) {
 					Interpolasi.interpolasi(s);
 				} else {
-					//m = read from file
+					System.out.println("Masukkan nama file: ");
+					String fileName = s.next();
+					m = Matriks.readFile(fileName);
+					m.print();
+					System.out.print("Nilai yang dicari: ");
+					double x = s.nextDouble();
+					Interpolasi.interpolasi(x,m);
 				}
 				
 			}
