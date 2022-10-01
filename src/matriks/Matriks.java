@@ -53,6 +53,46 @@ public class Matriks {
 		}
 		s.close();
 	}
+	
+	public static Matriks readFile(String file) {
+		/* Membaca matriks dari file eksternal*/
+		Matriks m = new Matriks();
+		try {
+			File namafile = new File(file);
+			Scanner scanFile = new Scanner(namafile);
+			int baris = 0;
+			int total = 0;
+		    //cek banyak baris
+		    while(scanFile.hasNextLine()){
+			baris++;
+			scanFile.nextLine();
+		    }
+		    scanFile.close();
+		    //cek total matriks
+		    Scanner sum = new Scanner(namafile);
+		    while(sum.hasNextDouble()){
+			total++;
+			sum.nextDouble();
+		    }
+		    sum.close();
+
+		    m = new Matriks(baris, total/baris); // kolom = total/baris
+
+		    Scanner input = new Scanner(namafile);
+		    for(int i = 0; i < m.getRow(); i++){
+			for(int j = 0; j < m.getCol(); j++){
+			    if(input.hasNextDouble()){
+				m.mat[i][j] = input.nextDouble();
+			    }
+			}
+		    }
+		    input.close(); 
+		} catch (Exception e) {
+				System.out.println("ERROR :" + e);
+		}
+		return m;
+    	}
+	
 	/* ***SELECTOR*** */
 	public double getMat(int r, int c) {
 		return mat[r][c];
