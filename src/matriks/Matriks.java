@@ -1,8 +1,8 @@
 package matriks;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import java.io.File;
 
@@ -239,8 +239,81 @@ public class Matriks {
 		 * F.S. mengeluarkan penyelesaian SPL dengan variabel sebanyak jumlah kolom - 1.
 		 * 		Dapat berupa solusi tunggal, parametrik, maupun tidak ada solusi.
 		 */
+		double EPS = 1e-8;
 		gaussElimintation();
-		
+		if(isImpossible()) {
+			System.out.println("Persamaan tidak memiliki solusi.");
+			return;
+		}
+		if(isMany()) {
+			// harus kerja dari bawah
+			System.out.println("Solusi SPL banyak, yaitu:");
+			int[] parameter = new int[getCol() - 1];
+			double[][] matSubstitusi = new double[getCol() - 1][getCol()];
+			
+			for(int i = 0; i < getCol() - 1; i++) {
+				parameter[i] = 0;
+				Arrays.fill(matSubstitusi[i], 0);
+			}
+			print();
+			int itr = 1;
+			for(int i = getRow() - 1; i >= 0; i--) {
+				int sU = -1;
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(getMat(i, j) < EPS) continue;
+					if(sU == -1) {
+						sU = j;
+						parameter[sU] = -1;
+						matSubstitusi[sU][getCol() - 1] = getMat(i, getCol() - 1);
+					}
+					else {
+						// jika parameter masih 0 -> jadi parameter
+						if(parameter[j] == 0) {
+							parameter[j] = itr++;
+							matSubstitusi[j][j] = 1;
+						}
+						
+						for(int k = 0; k < getCol(); k++) {
+							matSubstitusi[sU][k] -= matSubstitusi[j][k] * getMat(i, j);
+						}
+					}
+				}
+				
+			}
+			
+			for(int i = 0; i < matSubstitusi.length; i++) {
+				System.out.print("x" + (i + 1) + " =");
+				if(parameter[i] != -1) {
+					System.out.println(" " + sVar(parameter[i]));
+					continue;
+				}
+				if(matSubstitusi[i][getCol() - 1] != 0) System.out.print( " " + matSubstitusi[i][getCol() - 1] );
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(Math.abs( matSubstitusi[i][j] ) < EPS) continue;
+					if(matSubstitusi[i][j] > 0) {
+						System.out.print(" + ");
+					}
+					else {
+						System.out.print(" - ");
+					}
+					System.out.print(Math.abs( matSubstitusi[i][j] ) + sVar(parameter[j]));
+				}
+				System.out.println();
+			}
+			return;
+		}
+		// solusi tunggal
+		System.out.println("Solusi SPL Tunggal, yaitu:");
+		double[] val = new double[getCol() - 1];
+		for(int i = getCol() - 2; i >= 0; i--) {
+			val[i] = getMat(i, getCol() - 1);
+			for(int j = i+1; j < getCol() - 1; j++) {
+				val[i] -= getMat(i, j) * val[j];
+			}
+		}
+		for(int i = 0; i < getCol() - 1; i++) {
+			System.out.printf("x%d = %.4f\n", i+1, val[i]);
+		}
 		
 	}
 	

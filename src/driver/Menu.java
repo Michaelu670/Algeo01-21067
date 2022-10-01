@@ -34,7 +34,7 @@ public class Menu {
 	
 	public static void SPL(int metode, Matriks m) {
  		if (metode == 1) {
- 			m.gaussElimintation();
+ 			m.gaussSPL();
  		} else if (metode == 2) {
  			m.gaussJordanSPL();
  		} else if (metode == 3) {
