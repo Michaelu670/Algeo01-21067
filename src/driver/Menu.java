@@ -36,7 +36,7 @@ public class Menu {
  		if (metode == 1) {
  			m.gaussElimintation();
  		} else if (metode == 2) {
- 			m.gaussJordanElimination();
+ 			m.gaussJordanSPL();
  		} else if (metode == 3) {
  			m.inverseMethod();
 		} else if (metode == 4) {
