@@ -1,6 +1,7 @@
 package matriks;
 
 import java.util.Scanner;
+import java.io.File;
 
 public class Matriks {
 	double[][] mat = null;
@@ -27,7 +28,7 @@ public class Matriks {
 			System.out.print("[");
 			for(int j = 0; j < getCol(); j++) {
 				if(j > 0) System.out.print(",");
-				System.out.printf("%.2f",getMat(i, j));
+				System.out.printf("%f",getMat(i, j));
 			}
 			if(i == getRow() - 1) System.out.print("]");
 			else System.out.println("],");
@@ -51,7 +52,6 @@ public class Matriks {
 				mat[i][j] = s.nextDouble();
 			}
 		}
-		s.close();
 	}
 	
 	public static Matriks readFile(String file) {
@@ -170,12 +170,12 @@ public class Matriks {
 		}
 	}
 	
-	public void kaliBaris(int baris, double pengali) {
+	public void bagiBaris(int baris, double pembagi) {
 		/* Kalikan tiap elemen dari suatu baris dengan konstan pengali
 		 * I.S. baris dan pengali terdefinisi 
 		 * F.S. seluruh elemen pada baris dikalikan dengan pengali */
 		for(int i = 0; i < getCol(); i++) {
-			mat[baris][i] *= pengali;
+			mat[baris][i] = mat[baris][i] / pembagi;
 		}
 	}
 	
@@ -186,7 +186,7 @@ public class Matriks {
 		 * F.S. tiap elemen pada baris ke-baris ditambah pengali* baris ke-barisPenambah*/
 		
 		for(int i = 0; i < getCol(); i++) {
-			mat[baris][i] += pengali * mat[barisPenambah][i];
+			mat[baris][i] = mat[baris][i] + pengali * mat[barisPenambah][i];
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class Matriks {
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
 			double pembagi = getMat(i, satuUtamaPos);
-			kaliBaris(i, 1.0/pembagi);
+			bagiBaris(i, pembagi);
 			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
 			for(int k = i+1; k < getRow(); k++) {
 				double pengali = getMat(k, satuUtamaPos);
@@ -245,7 +245,7 @@ public class Matriks {
 			
 			if(getMat(i, satuUtamaPos) == 0) {
 				for(int k = i+1; k < getRow(); k++) {
-					if(getMat(k, satuUtamaPos) != 0) {
+					if(getMat(k, satuUtamaPos) == 0) {
 						// swap baris i dan k
 						tukarBaris(i, k);
 						break;
@@ -259,10 +259,13 @@ public class Matriks {
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
 			double pembagi = getMat(i, satuUtamaPos);
-			kaliBaris(i, 1.0/pembagi);
+			bagiBaris(i, pembagi);
 			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
 			for(int k = 0; k < getRow(); k++) {
 				if(i == k) continue;
+				if(getMat(k, satuUtamaPos) == 0) {
+					continue;
+				}
 				double pengali = getMat(k, satuUtamaPos);
 				tambahBaris(k, i, -pengali);
 			}
