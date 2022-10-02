@@ -1,6 +1,10 @@
 package matriks;
 
+import java.util.Arrays;
 import java.util.Scanner;
+
+
+import java.io.File;
 
 public class Matriks {
 	double[][] mat = null;
@@ -27,7 +31,7 @@ public class Matriks {
 			System.out.print("[");
 			for(int j = 0; j < getCol(); j++) {
 				if(j > 0) System.out.print(",");
-				System.out.printf("%.2f",getMat(i, j));
+				System.out.printf("%f",getMat(i, j));
 			}
 			if(i == getRow() - 1) System.out.print("]");
 			else System.out.println("],");
@@ -51,8 +55,47 @@ public class Matriks {
 				mat[i][j] = s.nextDouble();
 			}
 		}
-		s.close();
 	}
+	
+	public static Matriks readFile(String file) {
+		/* Membaca matriks dari file eksternal*/
+		Matriks m = new Matriks();
+		try {
+			File namafile = new File(file);
+			Scanner scanFile = new Scanner(namafile);
+			int baris = 0;
+			int total = 0;
+		    //cek banyak baris
+		    while(scanFile.hasNextLine()){
+			baris++;
+			scanFile.nextLine();
+		    }
+		    scanFile.close();
+		    //cek total matriks
+		    Scanner sum = new Scanner(namafile);
+		    while(sum.hasNextDouble()){
+			total++;
+			sum.nextDouble();
+		    }
+		    sum.close();
+
+		    m = new Matriks(baris, total/baris); // kolom = total/baris
+
+		    Scanner input = new Scanner(namafile);
+		    for(int i = 0; i < m.getRow(); i++){
+			for(int j = 0; j < m.getCol(); j++){
+			    if(input.hasNextDouble()){
+				m.mat[i][j] = input.nextDouble();
+			    }
+			}
+		    }
+		    input.close(); 
+		} catch (Exception e) {
+				System.out.println("ERROR :" + e);
+		}
+		return m;
+    	}
+	
 	/* ***SELECTOR*** */
 	public double getMat(int r, int c) {
 		return mat[r][c];
@@ -130,12 +173,12 @@ public class Matriks {
 		}
 	}
 	
-	public void kaliBaris(int baris, double pengali) {
+	public void bagiBaris(int baris, double pembagi) {
 		/* Kalikan tiap elemen dari suatu baris dengan konstan pengali
 		 * I.S. baris dan pengali terdefinisi 
 		 * F.S. seluruh elemen pada baris dikalikan dengan pengali */
 		for(int i = 0; i < getCol(); i++) {
-			mat[baris][i] *= pengali;
+			mat[baris][i] = mat[baris][i] / pembagi;
 		}
 	}
 	
@@ -146,7 +189,7 @@ public class Matriks {
 		 * F.S. tiap elemen pada baris ke-baris ditambah pengali* baris ke-barisPenambah*/
 		
 		for(int i = 0; i < getCol(); i++) {
-			mat[baris][i] += pengali * mat[barisPenambah][i];
+			mat[baris][i] = mat[baris][i] + pengali * mat[barisPenambah][i];
 		}
 	}
 	
@@ -179,7 +222,7 @@ public class Matriks {
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
 			double pembagi = getMat(i, satuUtamaPos);
-			kaliBaris(i, 1.0/pembagi);
+			bagiBaris(i, pembagi);
 			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
 			for(int k = i+1; k < getRow(); k++) {
 				double pengali = getMat(k, satuUtamaPos);
@@ -187,6 +230,89 @@ public class Matriks {
 			}
 			
 			satuUtamaPos++;
+		}
+		
+	}
+	
+	public void gaussSPL() {
+		/* I.S. matriks terdefinisi, memiliki ukuran positif
+		 * F.S. mengeluarkan penyelesaian SPL dengan variabel sebanyak jumlah kolom - 1.
+		 * 		Dapat berupa solusi tunggal, parametrik, maupun tidak ada solusi.
+		 */
+		double EPS = 1e-8;
+		gaussElimintation();
+		if(isImpossible()) {
+			System.out.println("Persamaan tidak memiliki solusi.");
+			return;
+		}
+		if(isMany()) {
+			// harus kerja dari bawah
+			System.out.println("Solusi SPL banyak, yaitu:");
+			int[] parameter = new int[getCol() - 1];
+			double[][] matSubstitusi = new double[getCol() - 1][getCol()];
+			
+			for(int i = 0; i < getCol() - 1; i++) {
+				parameter[i] = 0;
+				Arrays.fill(matSubstitusi[i], 0);
+			}
+			print();
+			int itr = 1;
+			for(int i = getRow() - 1; i >= 0; i--) {
+				int sU = -1;
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(getMat(i, j) < EPS) continue;
+					if(sU == -1) {
+						sU = j;
+						parameter[sU] = -1;
+						matSubstitusi[sU][getCol() - 1] = getMat(i, getCol() - 1);
+					}
+					else {
+						// jika parameter masih 0 -> jadi parameter
+						if(parameter[j] == 0) {
+							parameter[j] = itr++;
+							matSubstitusi[j][j] = 1;
+						}
+						
+						for(int k = 0; k < getCol(); k++) {
+							matSubstitusi[sU][k] -= matSubstitusi[j][k] * getMat(i, j);
+						}
+					}
+				}
+				
+			}
+			
+			for(int i = 0; i < matSubstitusi.length; i++) {
+				System.out.print("x" + (i + 1) + " =");
+				if(parameter[i] != -1) {
+					System.out.println(" " + sVar(parameter[i]));
+					continue;
+				}
+				if(matSubstitusi[i][getCol() - 1] != 0) System.out.print( " " + matSubstitusi[i][getCol() - 1] );
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(Math.abs( matSubstitusi[i][j] ) < EPS) continue;
+					if(matSubstitusi[i][j] > 0) {
+						System.out.print(" + ");
+					}
+					else {
+						System.out.print(" - ");
+					}
+					System.out.print(Math.abs( matSubstitusi[i][j] ) + sVar(parameter[j]));
+				}
+				System.out.println();
+			}
+			return;
+		}
+		// solusi tunggal
+		System.out.println("Solusi SPL Tunggal, yaitu:");
+		double[] val = new double[getCol() - 1];
+		for(int i = getCol() - 2; i >= 0; i--) {
+			val[i] = getMat(i, getCol() - 1);
+			for(int j = i+1; j < getCol() - 1; j++) {
+				val[i] -= getMat(i, j) * val[j];
+			}
+		}
+		for(int i = 0; i < getCol() - 1; i++) {
+			System.out.printf("x%d = %.4f\n", i+1, val[i]);
 		}
 		
 	}
@@ -205,7 +331,7 @@ public class Matriks {
 			
 			if(getMat(i, satuUtamaPos) == 0) {
 				for(int k = i+1; k < getRow(); k++) {
-					if(getMat(k, satuUtamaPos) != 0) {
+					if(getMat(k, satuUtamaPos) == 0) {
 						// swap baris i dan k
 						tukarBaris(i, k);
 						break;
@@ -219,10 +345,13 @@ public class Matriks {
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
 			double pembagi = getMat(i, satuUtamaPos);
-			kaliBaris(i, 1.0/pembagi);
+			bagiBaris(i, pembagi);
 			// kurangkan seluruh baris sehingga getMat(k, satuUtamaPos) == 0
 			for(int k = 0; k < getRow(); k++) {
 				if(i == k) continue;
+				if(getMat(k, satuUtamaPos) == 0) {
+					continue;
+				}
 				double pengali = getMat(k, satuUtamaPos);
 				tambahBaris(k, i, -pengali);
 			}
@@ -231,7 +360,75 @@ public class Matriks {
 		}
 	}
 	
-	public Matriks inverseMethod() {
+	public void gaussJordanSPL() {
+		/* I.S. Matriks terdefinisi, memiliki ukuran positif
+		 * F.S. mengeluarkan penyelesaian SPL dengan variabel sebanyak jumlah kolom - 1.
+		 * 		Dapat berupa solusi tunggal, parametrik, maupun tidak ada solusi.
+		 * 		Menggunakan eliminasi Gauss-Jordan
+		 */
+		double EPS = 1e-8;
+		gaussJordanElimination();
+		if(isImpossible()) {
+			System.out.println("Persamaan tidak memiliki solusi.");
+			return;
+		}
+		if(isMany()) {
+			System.out.println("Solusi SPL banyak, yaitu:");
+			int[] parameter = new int[getCol() - 1];
+			String[] ans = new String[getCol() - 1];
+			for(int i = 0; i < getCol() - 1; i++) {
+				parameter[i] = -1;
+				ans[i] = "";
+			}
+			print();
+			int itr = 1;
+			for(int i = 0; i < getRow(); i++) {
+				int sU = -1;
+				System.out.println(i + "  " + itr);
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(Math.abs( getMat(i, j) ) < EPS) continue;
+					if(sU == -1) {
+						sU = j;
+					}
+					else if(parameter[j] == -1) {
+						parameter[j] = itr;
+						itr++;
+						ans[j] = ans[j].concat( sVar(parameter[j]) );
+					}
+				}
+				if(sU == -1) continue;
+				ans[sU] = ans[sU].concat( String.valueOf( getMat(i, getCol() - 1) ) );
+				
+				for(int j = 0; j < getCol() - 1; j++) {
+					if(Math.abs( getMat(i, j) ) < EPS) continue;
+					if(sU != j) {
+						if(getMat(i, j) > 0) {
+							ans[sU] = ans[sU].concat(" - ");
+						}
+						else {
+							ans[sU] = ans[sU].concat(" + ");							
+						}
+						
+						ans[sU] = ans[sU].concat(String.valueOf(Math.abs( getMat(i, j) )));
+						ans[sU] = ans[sU].concat(ans[j]);
+					}
+				}
+			}
+			
+			for(int i = 0; i < ans.length; i++) {
+				System.out.print("x".concat(String.valueOf(i+1)).concat(" = "));
+				System.out.println(ans[i]);
+			}
+			return;
+		}
+		// solusi tunggal
+		System.out.println("Solusi SPL Tunggal, yaitu:");
+		for(int i = 0; i < getCol() - 1; i++) {
+			System.out.printf("x%d = %.4f\n", i+1, getMat(i, getCol() - 1));
+		}
+	}
+	
+	public void inverseMethod() {
 		/* Penyelesaian SPL menggunakan metode invers */
 		/* Ax = B, x = A^(-1)B */
 		
@@ -239,71 +436,127 @@ public class Matriks {
 		Matriks x = new Matriks(rowCnt, 1); // matriks x
 		Matriks B = new Matriks(rowCnt, 1); // matriks B
 		
-		for (int i = 0; i < rowCnt; i++) {
-				B.mat[i][0] = mat[i][colCnt-1];
-		}
-		for (int i = 0; i< rowCnt; i++) {
-			for (int j = 0; j<colCnt-1; j++) {
-				A.mat[i][j] = mat[i][j];
-			}
-		}
-		if (rowCnt == colCnt-1) {	// matriks persegi
-			x =  A.inverse().mul(B);	
-			return x;
-		}
-		return x;
-	}
-	
-	public Matriks cramer() {
-		Matriks result = new Matriks(rowCnt, 1);
-		if (determinant() != 0) {
-			Matriks temp1 = new Matriks(rowCnt, 1);
-			Matriks temp2 = new Matriks(rowCnt, colCnt-1);
-			
-			for (int row1 = 0; row1 < rowCnt; row1++) {
-				temp1.mat[row1][0] = mat[row1][colCnt-1];
-			}
-			
+		if ((rowCnt == colCnt-1)) {	//ukuran matriks sesuai
 			for (int i = 0; i < rowCnt; i++) {
-				
-				for (int row2 = 0; row2 < rowCnt; row2++) {  //copying nxn matrix of m
-					for (int col2 = 0; col2 < colCnt-1; col2++) {
-						temp2.mat[row2][col2] = mat[row2][col2];
-					}
-				}
-				
-				Float det = temp2.determinant();
-				
-				for (int j = 0; j < rowCnt; j++) {
-					temp2.mat[j][i] = temp1.mat[j][0];  //substituting LastCol
-				}
-				result.mat[i][0] = (temp2.determinant())/det;
+				B.mat[i][0] = mat[i][colCnt-1];
 			}
+			for (int i = 0; i< rowCnt; i++) {
+				for (int j = 0; j<colCnt-1; j++) {
+					A.mat[i][j] = mat[i][j];
+				}
+			}
+			if (A.determinant() != 0) {
+				x =  A.inverse().mul(B);	
+				for (int i = 0; i< A.getRow(); i++) {
+					System.out.printf("x%d = %.4f\n", i+1, x.getMat(i, 0));
+				}
+			} else {
+				System.out.println("Solusi tunggal tidak dapat ditentukan");
+			}
+		} else {
+			System.out.println("Solusi tunggal tidak dapat ditentukan");
 		}
-		else {
-			System.out.println("Tidak dapat diselesaikan (determinant = 0)");
-		}
-		return result;
 	}
 	
-	public float determinant() {
+	public void cramer() {
+		/*Penyelesaian SPL menggunakan metode cramer*/
+		
+		Matriks A = new Matriks(getRow(), getCol()-1); 
+		Matriks B = new Matriks(getRow(), 1);
+		Matriks ret = new Matriks (getRow(), 1);
+		int i,j;	
+		
+		if (rowCnt == colCnt-1)  { //ukuran matriks sesuai
+			for (i = 0; i < A.getRow(); i++) {
+				for (j = 0; j < A.getCol(); j++) {
+					A.setMat(i, j, getMat(i, j));
+				}
+			}
+
+			for (i = 0; i < A.getRow(); i++) {
+				B.setMat(i, 0, getMat(i, getCol()-1));
+			}
+			
+			double det = A.determinant(); 
+			
+			if (det != 0) {
+				for (i = 0; i< A.getRow(); i++) {
+					for (int row2 = 0; row2 < getRow(); row2++) {  //copying nxn matrix 
+						for (int col2 = 0; col2 < getCol()-1; col2++) {
+							A.setMat(row2, col2, getMat(row2, col2));
+						}
+					}
+					
+					for (j = 0; j < getRow(); j++) {
+						A.setMat(j, i, B.getMat(j, 0)); //substituting LastCol
+					}
+					
+					ret.setMat(i, 0, A.determinant()/det);
+				}
+				for (i = 0; i< A.getRow(); i++) {
+					System.out.printf("x%d = %.4f\n", i+1, ret.getMat(i, 0));
+				}
+			} else {
+				System.out.println("Solusi tunggal tidak dapat ditentukan");
+			}
+		} else {
+			System.out.println("Solusi tunggal tidak dapat ditentukan");
+		}
+	}
+	
+	public Matriks cramerMtx() {
+		/*Penyelesaian SPL menggunakan metode cramer*/
+		/*return dalam bentuk matriks*/
+		Matriks A = new Matriks(getRow(), getCol()-1); 
+		Matriks B = new Matriks(getRow(), 1);
+		Matriks ret = new Matriks (getRow(), 1);
+		int i,j;	
+		if (rowCnt == colCnt-1)  { //ukuran matriks sesuai
+			for (i = 0; i < A.getRow(); i++) {
+				for (j = 0; j < A.getCol(); j++) {
+					A.setMat(i, j, getMat(i, j));
+				}
+			}
+			for (i = 0; i < A.getRow(); i++) {
+				B.setMat(i, 0, getMat(i, getCol()-1));
+			}
+			double det = A.determinant(); 
+			if (det != 0) {
+				for (i = 0; i< A.getRow(); i++) {
+					for (int row2 = 0; row2 < getRow(); row2++) {  //copying nxn matrix 
+						for (int col2 = 0; col2 < getCol()-1; col2++) {
+							A.setMat(row2, col2, getMat(row2, col2));
+						}
+					}
+					for (j = 0; j < getRow(); j++) {
+						A.setMat(j, i, B.getMat(j, 0)); //substituting LastCol
+					}
+					ret.setMat(i, 0, A.determinant()/det);
+				}	
+			}
+		}
+		return ret;
+	}
+	
+	public double determinant() {
 		/* Mencari hasil determinan sebuah matriks */
 		/* Prekondisi: matriks terdefinisi berukuran nxn */
-		float ans = 0;
-		Matriks temp = new Matriks(rowCnt-1, colCnt-1);
+		double ans = 0;
+		Matriks temp = new Matriks(getRow()-1, getCol()-1);
 		int sign, i, j,k;
 		sign = 1;
 		
-		if (rowCnt == 1) {
-			ans = (float) getMat(0, 0);
+		if (getRow() == 1) {
+			ans = (double) getMat(0, 0);
 		} else {
-			for(i=0; i<rowCnt; i++) {
-				for(j=1; j<rowCnt; j++) {
-					for (k=0; k< rowCnt; k++) {
+			for(i=0; i<getRow(); i++) {
+				for(j=1; j<getRow(); j++) {
+					for (k=0; k< getRow(); k++) {
 						if (k<i) {
-							temp.mat[j-1][k] = getMat(j,k);
+							temp.setMat(j-1, k, getMat(j, k));
+							
 						} else if (k>i) {
-							temp.mat[j-1][k-1] = getMat(j, k);
+							temp.setMat(j-1, k-1,getMat(j, k));
 						}
 					}
 				}
@@ -357,7 +610,7 @@ public class Matriks {
 		return tempMtx.getMat(0, 0) * z * Math.pow((-1), t);		
 	}
 	
-	public float cofactorElmt(int p, int q) {
+	public double cofactorElmt(int p, int q) {
 		/* Menghitung cofactor tiap elemen pada matriks */
 		/* Prekondisi: matriks berukuran nxn */
 	
@@ -403,7 +656,6 @@ public class Matriks {
 	public Matriks inverse() {
 		Matriks inv = new Matriks(rowCnt, colCnt);
 		if (determinant() == 0) {
-			System.out.println("determinan = 0, tidak ada inverse");
 			inv = null;
 		} else {
 			inv = adjoin().mul(1/(determinant()));
@@ -436,11 +688,68 @@ public class Matriks {
 		return ret;
 	}
 	
-	public void augment() {
+	public boolean isImpossible() {
+		/* return true jika SPL tidak memiliki penyelesaian,
+		*  yaitu jika matriks memiliki baris 0 0 .. 0 1
+		*/
+		for(int i = 0; i < getRow(); i++) {
+			Boolean isRowImpossible = true;
+			for(int j = 0; j < getCol() - 1; j++) {
+				if(getMat(i, j) != 0) {
+					isRowImpossible = false;
+					break;
+				}
+			}
+			if(getMat(i, getCol() - 1) == 0) {
+				isRowImpossible = false;
+			}
+			if(isRowImpossible) {
+				return true;
+			}
+		}
 		
+		return false;
 	}
 	
-	/* Static */
+	public boolean isMany() {
+		/* return true jika SPL memiliki banyak penyelesaian,
+		*  yaitu jika baris yang memiliki nilai tak nol selain di kolom terakhir
+		*  berjumlah kurang dari jumlahkolom - 1
+		*  dan tidak isImpossible
+		*/
+		
+		if(isImpossible()) return false;
+		int cntActiveRow = 0;
+		for(int i = 0; i < getRow(); i++) {
+			Boolean isActiveRow = false;
+			for(int j = 0; j < getCol() - 1; j++) {
+				if(getMat(i, j) != 0) {
+					isActiveRow = true;
+					break;
+				}
+			}
+			if(isActiveRow) {
+				cntActiveRow++;
+			}
+		}
+		
+		if(cntActiveRow == getCol() - 1) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static String sVar(int x) {
+		String ret = "";
+		while(x > 0) {
+			char c = (char) ((x % 27) + (int) ('a') - 1);
+			ret = String.valueOf(c).concat(ret);
+			x /= 27;
+		}
+		return ret;
+	}
+	
+	/* Common Matriks */
 	public static Matriks one(int sz) {
 		Matriks ret = new Matriks(sz, sz);
 		for(int i = 0; i < sz; i++) {
