@@ -34,15 +34,15 @@ public class Menu {
 		System.out.println("Pilih metode penyelesaian: ");
 	}
 	
-	public static void SPL(int metode, Matriks m) {
+	public static void SPL(int metode, Matriks m, Scanner s) {
  		if (metode == 1) {
- 			m.gaussSPL();
+ 			m.gaussSPL(s);
  		} else if (metode == 2) {
- 			m.gaussJordanSPL();
+ 			m.gaussJordanSPL(s);
  		} else if (metode == 3) {
- 			m.inverseMethod();
+ 			m.inverseMethod(s);
 		} else if (metode == 4) {
-			m.cramer();
+			m.cramer(s);
 		}
 	}
 	

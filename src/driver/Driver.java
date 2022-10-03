@@ -47,7 +47,7 @@ public class Driver {
 						m = Matriks.readFile(fileName);
 					}
 					
-					Menu.SPL(metode, m);
+					Menu.SPL(metode, m, s);
 				}
 				
 			} else if (command == 2) {
@@ -80,8 +80,10 @@ public class Driver {
 					} else {
 						if (metode == 1) {
 							System.out.println("determinan = " +m.determinanReduksiBaris());
+							Menu.outputToFile(s, "determinan = " + String.valueOf(m.determinanReduksiBaris()));
 						} else {
 							System.out.println("determinan = " +m.determinant());
+							Menu.outputToFile(s, "determinan = " + String.valueOf(m.determinant()));
 						}
 					}
 				}
@@ -115,9 +117,14 @@ public class Driver {
 						System.out.println("Matriks balikan tidak dapat ditentukan");
 					} else {
 						if (metode == 1) {
-							m.inverseByAugment().print();
+							m = m.inverseByAugment();
+							m.print();
+							Menu.outputToFile(s, m.toString());
+							
 						} else {
-							m.inverse().print();
+							m = m.inverse();
+							m.print();
+							Menu.outputToFile(s, m.toString());
 						}
 					}
 				}
