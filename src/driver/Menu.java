@@ -1,5 +1,7 @@
 package driver;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 import matriks.Matriks;
@@ -50,10 +52,34 @@ public class Menu {
 		System.out.println("3. Kembali");
 	}
 	
+	public static void metodeBicubic() {
+		System.out.println("\n1. Bicubic Interpolation");
+		System.out.println("2. Perbesaran gambar");
+		System.out.println("3. Kembali");
+	}
+	
 	public static void metodeBalikan() {
 		System.out.println("\n1. Metode adjoin");
 		System.out.println("2. Metode matriks augmented");
 		System.out.println("3. Kembali");
 		
+	}
+	
+	public static void outputToFile(Scanner s, String str) {
+		System.out.print("\nApakah output ingin dimasukkan ke file? (Y/N) ");
+		String ans = s.next();
+		if((ans.charAt(0) != 'Y') && (ans.charAt(0) != 'y')) {
+			return;
+		}
+		try {
+			System.out.print("Nama file tujuan : ");
+			String dest = s.next();
+			FileWriter writer = new FileWriter("test/".concat(dest));
+			writer.write(str);
+			writer.close();
+			System.out.println("Berhasil menulis ke file.");
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

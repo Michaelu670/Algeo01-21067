@@ -141,21 +141,32 @@ public class Driver {
 					m.print();
 					System.out.print("Nilai yang dicari: ");
 					double x = s.nextDouble();
-					Interpolasi.interpolasi(x,m);
+					Interpolasi.interpolasi(x,m,s);
 				}
 				
 			}
 			else if (command == 5) {
-				Menu.printOpsi();
-				opsi = s.nextInt();
-				if(opsi == 1) {
-					Bicubic.bicubicInterpolation(s);
+				Menu.metodeBicubic();
+				metode = s.nextInt();
+				if(metode == 1) {
+					Menu.printOpsi();
+					opsi = s.nextInt();
+					if(opsi == 1) {
+						Bicubic.bicubicInterpolation(s);
+					}
+					else {
+						System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
+						System.out.print("Masukkan nama file: ");
+						String sourceFile = s.next();
+						Bicubic.bicubicInterpolation(sourceFile, s);
+					}
 				}
-				else {
-					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
-					System.out.print("Masukkan nama file: ");
-					String sourceFile = s.next();
-					Bicubic.bicubicInterpolation(sourceFile, s);
+				else if(metode == 2) {
+					System.out.print("Masukkan nama file asal: ");
+					String src = s.next();
+					System.out.print("Masukkan nama file tujuan: ");
+					String dest = s.next();
+					Bicubic.zoomImg(src, dest);
 				}
 			}
 			else if (command == 6) {

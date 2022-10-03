@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import driver.Menu;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;  // Import the File class
@@ -38,7 +40,7 @@ public class Bicubic {
 		double tx, ty;
 		tx = s.nextDouble();
 		ty = s.nextDouble();
-		bicubicInterpolation(f, tx, ty);
+		bicubicInterpolation(f, tx, ty, s);
 	}
 	
 	public static void bicubicInterpolation(String sourceFile, Scanner s) {
@@ -79,10 +81,10 @@ public class Bicubic {
 			e.printStackTrace();
 			return;
 		}
-		bicubicInterpolation(f, tx, ty);
+		bicubicInterpolation(f, tx, ty, s);
 	}
 	
-	public static void bicubicInterpolation(Matriks f, double tx, double ty) {
+	public static void bicubicInterpolation(Matriks f, double tx, double ty, Scanner s) {
 		/* I.S. f terdefinisi matriks 16x1
 		 * 		tx, ty terdefinisi dan 0 <= tx, ty <= 1
 		 * F.S. output hasil interpolasi pada (tx, ty) 
@@ -97,6 +99,9 @@ public class Bicubic {
 		}
 		
 		System.out.println("f(" + tx + " , " + ty + ") = " + ans);
+		String fileOutput = "f(".concat(String.valueOf(tx)).concat(" , ").concat(String.valueOf(ty)).concat(") = ")
+				.concat(String.valueOf(ans));
+		Menu.outputToFile(s, fileOutput);
 	}
 	
 	public static double bicubicInterpolation(Matriks f, double tx, double ty, Matriks a) {
@@ -132,7 +137,7 @@ public class Bicubic {
 		File f = null;
 		
 		try {
-			f = new File(sourceFile);
+			f = new File("test/".concat(sourceFile));
 			img = ImageIO.read(f);
 		} catch (IOException e) {
 			System.out.println(e);
@@ -179,7 +184,7 @@ public class Bicubic {
 		}
 		
 		try {
-			File output_file = new File(destFile);
+			File output_file = new File("test/".concat(destFile));
 			ImageIO.write(imgZoom, "jpg", output_file);
 		}
 		catch(IOException e) {

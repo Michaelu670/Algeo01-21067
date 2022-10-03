@@ -2,6 +2,7 @@ package persoalan;
 
 import java.util.Scanner;
 
+import driver.Menu;
 import matriks.Matriks;
 
 public class Interpolasi {
@@ -19,7 +20,7 @@ public class Interpolasi {
 				m.setMat(i, j, s.nextDouble());
 			}
 		}
-		interpolasi(x, m);
+		interpolasi(x, m, s);
 	}
 	
 	private static Matriks specialGaussJordan(Matriks m) {
@@ -36,7 +37,7 @@ public class Interpolasi {
 		return ret;
 	}
 	
-	public static void interpolasi(double x, Matriks m ) {
+	public static void interpolasi(double x, Matriks m, Scanner s ) {
 		Matriks mtx = new Matriks(m.getRow(), m.getRow()+1);
 		double ans = 0;
 		
@@ -56,7 +57,7 @@ public class Interpolasi {
 		}
 		
 		System.out.printf("f(x)=");
-		
+		String fileOutput = "f(x)=";
 		for (int i = mtx.getRow()-1; i>=0; i--) {
 			Character sign = '+';
 			if (mtx.getMat(i, 0) < 0) {
@@ -65,16 +66,23 @@ public class Interpolasi {
 			
 			if (i == 0) {
 				System.out.printf(" %c%.4f", sign, mtx.getMat(i,0), mtx.getRow()-1);
+				fileOutput = fileOutput.concat(String.format(" %c%.4f", sign, mtx.getMat(i,0), mtx.getRow()-1));
 			} else if (i == mtx.getRow()-1){
 				System.out.printf(" %.4fx^%d", mtx.getMat(i, 0), mtx.getRow()-1);
+				fileOutput = fileOutput.concat(String.format(" %.4fx^%d", mtx.getMat(i, 0), mtx.getRow()-1));
 			} else if (i == 1){
 				System.out.printf(" %c%.4fx", sign, mtx.getMat(i, 0));
+				fileOutput = fileOutput.concat(String.format(" %c%.4fx", sign, mtx.getMat(i, 0)));
 			}else {
 				System.out.printf(" %c%.4fx^%d", sign, mtx.getMat(i, 0), i);
+				fileOutput = fileOutput.concat(String.format(" %c%.4fx^%d", sign, mtx.getMat(i, 0), i));
 			}
 		}
 		
 		System.out.printf("\nf(%.2f)= %.4f", x, ans);
+		fileOutput = fileOutput.concat(String.format("\nf(%.2f)= %.4f", x, ans));
+		
+		Menu.outputToFile(s, fileOutput);
 	}
 
 	

@@ -1,6 +1,7 @@
 package persoalan;
 import java.util.Scanner;
 
+import driver.Menu;
 import matriks.Matriks;
 
 public class Regresi {
@@ -54,6 +55,7 @@ public static void regresiLinierBerganda(int n, int m, double[][] mat, Scanner s
 	
 	System.out.println();
 	System.out.println("Persamaan Regresi :");
+	String fileOutput = "Persamaan Regresi : ";
 	String pers = "f(x) = ";
 	for (int i = 0; i < valb.length; i++) {
 		if (i == 0) {
@@ -69,7 +71,7 @@ public static void regresiLinierBerganda(int n, int m, double[][] mat, Scanner s
 	}
 	System.out.println(pers);
 	System.out.println();
-	
+	fileOutput = fileOutput.concat(pers).concat("\n");
 	double[] valk = new double[n];
 	
 	
@@ -99,6 +101,9 @@ public static void regresiLinierBerganda(int n, int m, double[][] mat, Scanner s
 	System.out.println("Taksiran nilai fungsi pada X[k] yang diberikan :");
 	System.out.print(valt);
 	System.out.println(end);
+	fileOutput = fileOutput.concat("Taksiran nilai fungsi pada X[k] yang diberikan :\n").concat(valt)
+			.concat(String.valueOf(end)).concat("\n");
+	Menu.outputToFile(s, fileOutput);
 }
 	
 public static void regresiLinierBerganda(Scanner s) {
