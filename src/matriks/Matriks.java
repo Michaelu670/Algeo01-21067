@@ -123,10 +123,12 @@ public class Matriks {
 		/* Prakondisi : jumlah baris m = jumlah kolom m2 */
 		assert(getCol() == m2.getRow());
 		Matriks ret = new Matriks(getRow(), m2.getCol());
+		System.out.println(getRow() + " " + getCol() + " " + m2.getRow() + " " + m2.getCol());
+		System.out.println(ret.getRow() + " " + ret.getCol());
 		for(int i = 0; i < ret.getRow(); i++) {
 			for(int j = 0; j < ret.getCol(); j++) {
 				ret.mat[i][j] = 0;
-				for(int k = 0; k < getRow(); k++) {
+				for(int k = 0; k < getCol(); k++) {
 					ret.mat[i][j] += mat[i][k] * m2.mat[k][j];
 				}
 			}

@@ -1,92 +1,118 @@
 package persoalan;
+import java.util.Scanner;
+
 import matriks.Matriks;
 
 public class Regresi {
 
-	public static String regresiLinierBerganda(Matriks m) {
+public static void regresiLinierBerganda(Scanner s) {
 		
-		Matriks regMtx = new Matriks(m.getRow(), m.getCol());
-		Matriks yMtx = new Matriks(m.getRow(), 1);
-		Matriks valB = new Matriks(m.getRow(), m.getCol() + 1);
-		//Matriks splMtx = new Matriks(valB.getRow(), 1);
+		System.out.print("Masukkan jumlah peubah x : ");
+		int n = s.nextInt();
+
+		System.out.print("Masukkan jumlah sampel : ");
+		int m = s.nextInt();
 		
-		for (int g = 0; g < m.getRow(); g++) {
-			for (int h = 0; h < m.getCol(); h++) {
+		System.out.println("Masukkan semua nilai-nilai x dan nilai y dalam bentuk Matriks Augmented :");
+		double[][] mat = new double[m][n + 1];
+		for(int i = 0; i < m; i++) {
+			for(int j = 0; j < n + 1; j++) {
+				mat[i][j] = s.nextDouble();
+			}
+		}
+		Matriks regMtx = new Matriks(m, n + 1);
+		Matriks regMtx2 = null;
+		Matriks yMtx = new Matriks(m, 1);
+		Matriks yMtx2 = null;
+		Matriks valB = new Matriks(n+1, n + 2);
+		
+		for (int g = 0; g < m; g++) {
+			for (int h = 0; h < n + 1; h++) {
 				if (h == 0) {
 					regMtx.setMat(g, h, 1);
 				}
 				else {
-					regMtx.setMat(g, h, m.getMat(g, h - 1));
+					regMtx.setMat(g, h, mat[g][h - 1]);
 				}
 			}
 		}
-		for (int y = 0; y < m.getRow(); y++) {
-			yMtx.setMat(y, 0, m.getMat(y, m.getCol() - 1));
-		}
 		
-		for (int e = 0; e < m.getRow(); e++) {
-			for (int f = 0; f < m.getCol() + 1; f++) {
-				if (f == m.getCol()) {
-					valB.setMat(e, f, yMtx.getMat(e, 0));
+		for (int y = 0; y < m; y++) {
+			yMtx.setMat(y, 0, mat[y][n]);
+		}
+
+		regMtx2 = regMtx.transpose().mul(regMtx);
+		yMtx2 = regMtx.transpose().mul(yMtx);
+
+		//Normal Estimation Equation for Multiple Linear Regression
+		for (int e = 0; e < n + 1; e++) {
+			for (int f = 0; f < n + 2; f++) {
+				if (f == n + 1) {
+					valB.setMat(e, f, yMtx2.getMat(e, 0));
 				}
 				else {
-					valB.setMat(e, f, regMtx.getMat(e, f));
+					valB.setMat(e, f, regMtx2.getMat(e, f));
 				}
 			}
 		}
 		
 		valB.gaussElimintation();
-			
-		/*for (int p = valB.getRow() - 1; p > -1; p--) {
-			for (int q = valB.getCol() - 1; q > -1; q--) {
-				if (valB.getMat(p, q) != 0) {
-					if (q != 0) {
-						if (p != valB.getRow() - 1) {
-							valB.setMat(p, q, (valB.getMat(p, q) * valB.getMat(p + 1,  q)));
-						}							
-						
-					}
-				}
-			}
-		}*/
-		//p = 1
-		//q = 3
 		
-		/*Matriks gaussXMtx = new Matriks(valB.getRow(), valB.getCol() - 1);
-		Matriks gaussYMtx = new Matriks(valB.getRow(), 1);
-		
-		for (int n = 0; n < valB.getRow(); n++) {
-			for (int o = 0; n < valB.getCol() - 1; o++) {
-				gaussXMtx.setMat(n, o, valB.getMat(n, o));
+		double[] valb = new double[valB.getCol() - 1];
+		for(int i = valB.getCol() - 2; i >= 0; i--) {
+			valb[i] = valB.getMat(i, valB.getCol() - 1);
+			for(int j = i+1; j < valB.getCol() - 1; j++) {
+				valb[i] -= valB.getMat(i, j) * valb[j];
 			}
 		}
 		
-		for (int l = 0; l < valB.getRow(); l++) {
-			gaussYMtx.setMat(l, 0, valB.getMat(l, valB.getCol() - 1));
-		}
-			
-		for (int p = valB.getRow() - 1; p > -1; p--) {
-			
-		}*/
-		
-		//Matriks valB = ((((regMtx.mul(regMtx.transpose())).inverse()).mul(regMtx.transpose())).mul(yMtx));
-		
+		System.out.println();
+		System.out.println("Persamaan Regresi :");
 		String pers = "f(x) = ";
-		for (int i = 0; i < m.getRow(); i++) {
+		for (int i = 0; i < valb.length; i++) {
 			if (i == 0) {
-				pers += Double.toString(valB.getMat(i, valB.getCol() - 1));
+				pers += valb[i];
 			}
-			else if (valB.getMat(i, valB.getCol() - 1) >= 0) {
-				pers += " + " + valB.getMat(i, valB.getCol() - 1) + "X" + "[" + i + "]";
+			else if (valb[i] >= 0) {
+				pers += " + " + valb[i] + "X" + "[" + i + "]";
 			}
 			else {
-				pers += " - " + Math.abs(valB.getMat(i, valB.getCol() - 1)) + "X" + "[" + i + "]";
+				pers += " - " + Math.abs(valb[i]) + "X" + "[" + i + "]";
 			}
 			
 		}
-		return pers;
+		System.out.println(pers);
+		System.out.println();
+		
+		double[] valk = new double[n];
 		
 		
+		System.out.println("Masukkan nilai X[k] yang ingin ditaksir :");
+		for(int i = 0; i < n; i++) {
+			String xk = "- ";
+			int j = i + 1;
+			xk += "X" + "[" + j + "] : ";
+			System.out.print(xk);
+			valk[i] = s.nextDouble();
+		}
+		
+		double end = valb[0];
+		for(int i = 1; i < n + 1; i++) {
+			end += valb[i]*valk[i - 1];
+		}
+		String valt = "f(";
+		for(int i = 0; i < n; i++) {
+			if (i < n-1) {
+				valt += valk[i] + ", ";
+			}
+			else {
+				valt += valk[i] + ") = ";
+			}
+		}
+		System.out.println();
+		System.out.println("Taksiran nilai fungsi pada X[k] yang diberikan :");
+		System.out.print(valt);
+		System.out.println(end);
 	}
 	
 	
