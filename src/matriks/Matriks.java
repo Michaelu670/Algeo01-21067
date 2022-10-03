@@ -537,7 +537,7 @@ public class Matriks {
 				}
 				for (i = 0; i< A.getRow(); i++) {
 					System.out.printf("x%d = %.4f\n", i+1, ret.getMat(i, 0));
-					fileOutput.concat(String.format("x%d = %.4f\n", i+1, ret.getMat(i, 0)));
+					fileOutput = fileOutput.concat(String.format("x%d = %.4f\n", i+1, ret.getMat(i, 0)));
 				}
 				Menu.outputToFile(s, fileOutput);
 			} else {
