@@ -1,6 +1,6 @@
 # Algeo01-21067
 Tugas besar 1 Mata Kuliah IF2123 Aljabar Linier dan Geometri
-- 13521068 Yobel Dean Christopher
+- 13521067 Yobel Dean Christopher
 - 13521120 Febryan Arota Hia
 - 13521137 Michael Utama
 
