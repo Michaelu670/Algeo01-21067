@@ -342,7 +342,7 @@ public class Matriks {
 			
 			if(getMat(i, satuUtamaPos) == 0) {
 				for(int k = i+1; k < getRow(); k++) {
-					if(getMat(k, satuUtamaPos) > 0) {
+					if(getMat(k, satuUtamaPos) != 0) {
 						// swap baris i dan k
 						tukarBaris(i, k);
 						break;
