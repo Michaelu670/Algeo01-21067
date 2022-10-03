@@ -6,8 +6,6 @@ import java.util.Scanner;
 import driver.Menu;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Matriks {
 	double[][] mat = null;
