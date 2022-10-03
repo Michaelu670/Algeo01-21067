@@ -74,7 +74,7 @@ public class Menu {
 		try {
 			System.out.print("Nama file tujuan : ");
 			String dest = s.next();
-			FileWriter writer = new FileWriter("test/".concat(dest));
+			FileWriter writer = new FileWriter("../test/".concat(dest));
 			writer.write(str);
 			writer.close();
 			System.out.println("Berhasil menulis ke file.");

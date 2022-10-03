@@ -62,7 +62,7 @@ public class Matriks {
 		/* Membaca matriks dari file eksternal*/
 		Matriks m = new Matriks();
 		try {
-			File namafile = new File("test/".concat(file));
+			File namafile = new File("../test/".concat(file));
 			Scanner scanFile = new Scanner(namafile);
 			int baris = 0;
 			int total = 0;

@@ -52,7 +52,7 @@ public class Bicubic {
 		Matriks f = new Matriks(16, 1);
 		double tx = 5, ty = 5;
 		try {
-			File src = new File("test/".concat(sourceFile));
+			File src = new File("../test/".concat(sourceFile));
 			Scanner scannerFile = new Scanner(src);
 			int itr = 0;
 			while(scannerFile.hasNextLine()) {
@@ -184,7 +184,7 @@ public class Bicubic {
 		}
 		
 		try {
-			File output_file = new File("test/".concat(destFile));
+			File output_file = new File("../test/".concat(destFile));
 			ImageIO.write(imgZoom, "jpg", output_file);
 		}
 		catch(IOException e) {
