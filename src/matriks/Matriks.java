@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Matriks {
 	double[][] mat = null;
@@ -61,7 +63,7 @@ public class Matriks {
 		/* Membaca matriks dari file eksternal*/
 		Matriks m = new Matriks();
 		try {
-			File namafile = new File(file);
+			File namafile = new File("test/".concat(file));
 			Scanner scanFile = new Scanner(namafile);
 			int baris = 0;
 			int total = 0;
@@ -123,8 +125,6 @@ public class Matriks {
 		/* Prakondisi : jumlah baris m = jumlah kolom m2 */
 		assert(getCol() == m2.getRow());
 		Matriks ret = new Matriks(getRow(), m2.getCol());
-		System.out.println(getRow() + " " + getCol() + " " + m2.getRow() + " " + m2.getCol());
-		System.out.println(ret.getRow() + " " + ret.getCol());
 		for(int i = 0; i < ret.getRow(); i++) {
 			for(int j = 0; j < ret.getCol(); j++) {
 				ret.mat[i][j] = 0;
@@ -311,6 +311,7 @@ public class Matriks {
 				}
 				System.out.println();
 			}
+			
 			return;
 		}
 		// solusi tunggal

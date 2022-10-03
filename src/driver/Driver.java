@@ -41,10 +41,10 @@ public class Driver {
 					if (opsi == 1) {
 						m.read(s);
 					} else {
+						System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
 						System.out.println("Masukkan nama file: ");
 						String fileName = s.next();
 						m = Matriks.readFile(fileName);
-						m.print();
 					}
 					
 					Menu.SPL(metode, m);
@@ -69,10 +69,10 @@ public class Driver {
 					if (opsi == 1) {
 						m.read(s);
 					} else {
+						System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
 						System.out.println("Masukkan nama file: ");
 						String fileName = s.next();
 						m = Matriks.readFile(fileName);
-						m.print();
 					}
 					
 					if (m.getRow() != m.getCol()) {
@@ -106,7 +106,10 @@ public class Driver {
 					if (opsi == 1) {
 						m.read(s);
 					} else {
-						//m = read from file
+						System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
+						System.out.println("Masukkan nama file: ");
+						String fileName = s.next();
+						m = Matriks.readFile(fileName);
 					}
 					if (m.getCol() != m.getRow()) {
 						System.out.println("Matriks balikan tidak dapat ditentukan");
@@ -131,6 +134,7 @@ public class Driver {
 				if (opsi == 1) {
 					Interpolasi.interpolasi(s);
 				} else {
+					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
 					System.out.println("Masukkan nama file: ");
 					String fileName = s.next();
 					m = Matriks.readFile(fileName);
@@ -149,9 +153,9 @@ public class Driver {
 				}
 				else {
 					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
-					System.out.print("Nama file input : ");
+					System.out.print("Masukkan nama file: ");
 					String sourceFile = s.next();
-					Bicubic.bicubicInterpolation(sourceFile);
+					Bicubic.bicubicInterpolation(sourceFile, s);
 				}
 			}
 			else if (command == 6) {
@@ -162,9 +166,9 @@ public class Driver {
 				}
 				else {
 					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
-					System.out.print("Nama file input : ");
+					System.out.print("Masukkan nama file: ");
 					String sourceFile = s.next();
-					
+					Regresi.regresiLinierBerganda(sourceFile, s);
 				}
 			}
 		}

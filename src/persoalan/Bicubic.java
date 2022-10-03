@@ -41,7 +41,7 @@ public class Bicubic {
 		bicubicInterpolation(f, tx, ty);
 	}
 	
-	public static void bicubicInterpolation(String sourceFile) {
+	public static void bicubicInterpolation(String sourceFile, Scanner s) {
 		/* I.S. sourceFile terdefinisi
 		 * F.S. jika sourceFile merupakan path valid ke suatu file txt,
 		 * 		mengembalikan nilai bicubic interpolation.
@@ -66,6 +66,12 @@ public class Bicubic {
 					}
 					
 				}
+			}
+			if(tx == 5) {
+				System.out.print("Posisi x yang dicari: ");
+				tx = s.nextDouble();
+				System.out.print("Posisi y yang dicari: ");
+				ty = s.nextDouble();
 			}
 			scannerFile.close();
 		} catch (FileNotFoundException e) {
