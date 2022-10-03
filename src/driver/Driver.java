@@ -142,10 +142,30 @@ public class Driver {
 				
 			}
 			else if (command == 5) {
-				
+				Menu.printOpsi();
+				opsi = s.nextInt();
+				if(opsi == 1) {
+					Bicubic.bicubicInterpolation(s);
+				}
+				else {
+					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
+					System.out.print("Nama file input : ");
+					String sourceFile = s.next();
+					Bicubic.bicubicInterpolation(sourceFile);
+				}
 			}
 			else if (command == 6) {
-				
+				Menu.printOpsi();
+				opsi = s.nextInt();
+				if(opsi == 1) {
+					Regresi.regresiLinierBerganda(s);
+				}
+				else {
+					System.out.println("** SELURUH ALAMAT DITULIS RELATIF TERHADAP FOLDER test **");
+					System.out.print("Nama file input : ");
+					String sourceFile = s.next();
+					
+				}
 			}
 		}
 		System.out.println("\nseeleesaaiii!!! :D\n");

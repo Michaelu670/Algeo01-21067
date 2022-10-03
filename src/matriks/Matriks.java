@@ -220,6 +220,7 @@ public class Matriks {
 			// kalau semua nilainya 0, naikkan posisi satu utama & cont
 			if(getMat(i, satuUtamaPos) == 0) {
 				satuUtamaPos++;
+				i--;
 				continue;
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
@@ -257,12 +258,11 @@ public class Matriks {
 				parameter[i] = 0;
 				Arrays.fill(matSubstitusi[i], 0);
 			}
-			print();
 			int itr = 1;
 			for(int i = getRow() - 1; i >= 0; i--) {
 				int sU = -1;
 				for(int j = 0; j < getCol() - 1; j++) {
-					if(getMat(i, j) < EPS) continue;
+					if(Math.abs(getMat(i, j)) < EPS) continue;
 					if(sU == -1) {
 						sU = j;
 						parameter[sU] = -1;
@@ -283,13 +283,22 @@ public class Matriks {
 				
 			}
 			
+			// cek jika ada variabel belum terpakai
+			for(int i = 0; i < getCol() - 1; i++) {
+				if(parameter[i] == 0) {
+					parameter[i] = itr++;
+					matSubstitusi[i][i] = 1;
+				}
+			}
+			
+			
 			for(int i = 0; i < matSubstitusi.length; i++) {
 				System.out.print("x" + (i + 1) + " =");
 				if(parameter[i] != -1) {
 					System.out.println(" " + sVar(parameter[i]));
 					continue;
 				}
-				if(matSubstitusi[i][getCol() - 1] != 0) System.out.print( " " + matSubstitusi[i][getCol() - 1] );
+				System.out.print( " " + matSubstitusi[i][getCol() - 1] );
 				for(int j = 0; j < getCol() - 1; j++) {
 					if(Math.abs( matSubstitusi[i][j] ) < EPS) continue;
 					if(matSubstitusi[i][j] > 0) {
@@ -333,7 +342,7 @@ public class Matriks {
 			
 			if(getMat(i, satuUtamaPos) == 0) {
 				for(int k = i+1; k < getRow(); k++) {
-					if(getMat(k, satuUtamaPos) == 0) {
+					if(getMat(k, satuUtamaPos) > 0) {
 						// swap baris i dan k
 						tukarBaris(i, k);
 						break;
@@ -343,6 +352,7 @@ public class Matriks {
 			// kalau semua nilainya 0, naikkan posisi satu utama & cont
 			if(getMat(i, satuUtamaPos) == 0) {
 				satuUtamaPos++;
+				i--;
 				continue;
 			}
 			// bagi baris ke-i dengan nilai getMat(i, satuUtamaPos)
@@ -357,7 +367,6 @@ public class Matriks {
 				double pengali = getMat(k, satuUtamaPos);
 				tambahBaris(k, i, -pengali);
 			}
-			
 			satuUtamaPos++;
 		}
 	}
@@ -379,20 +388,19 @@ public class Matriks {
 			int[] parameter = new int[getCol() - 1];
 			String[] ans = new String[getCol() - 1];
 			for(int i = 0; i < getCol() - 1; i++) {
-				parameter[i] = -1;
+				parameter[i] = 0;
 				ans[i] = "";
 			}
-			print();
 			int itr = 1;
 			for(int i = 0; i < getRow(); i++) {
 				int sU = -1;
-				System.out.println(i + "  " + itr);
 				for(int j = 0; j < getCol() - 1; j++) {
 					if(Math.abs( getMat(i, j) ) < EPS) continue;
 					if(sU == -1) {
 						sU = j;
+						parameter[sU] = -1;
 					}
-					else if(parameter[j] == -1) {
+					else if(parameter[j] == 0) {
 						parameter[j] = itr;
 						itr++;
 						ans[j] = ans[j].concat( sVar(parameter[j]) );
@@ -414,6 +422,14 @@ public class Matriks {
 						ans[sU] = ans[sU].concat(String.valueOf(Math.abs( getMat(i, j) )));
 						ans[sU] = ans[sU].concat(ans[j]);
 					}
+				}
+			}
+			
+			// cek jika ada variabel belum terpakai
+			for(int i = 0; i < getCol() - 1; i++) {
+				if(parameter[i] == 0) {
+					parameter[i] = itr++;
+					ans[i] = ans[i].concat( sVar(parameter[i]) );
 				}
 			}
 			
@@ -742,11 +758,17 @@ public class Matriks {
 	}
 	
 	public static String sVar(int x) {
+		x--;
 		String ret = "";
-		while(x > 0) {
-			char c = (char) ((x % 27) + (int) ('a') - 1);
-			ret = String.valueOf(c).concat(ret);
-			x /= 27;
+		int jmlHuruf = 1;
+		int jmlSekarang = 26;
+		while(x > jmlSekarang) {
+			jmlHuruf++;
+			x = x - jmlSekarang;
+			jmlSekarang *= 26;
+		}
+		for(int i = 0; i < jmlHuruf; i++) {
+			ret= String.valueOf( (char)((int)('a') + (x % 26)) ).concat(ret);
 		}
 		return ret;
 	}

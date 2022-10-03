@@ -114,6 +114,10 @@ public static void regresiLinierBerganda(Scanner s) {
 		System.out.print(valt);
 		System.out.println(end);
 	}
+
+public static void regresiLinierBerganda(String sourceFile) {
+	
+}
 	
 	
 }
